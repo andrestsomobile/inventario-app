@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    app:cardElevation="6dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="7dp">
+
+        <TextView
+            android:id="@+id/cClientTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/text_view_client"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/clientTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            app:layout_constraintTop_toTopOf="@id/cClientTextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="D1"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/cRequisitionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            app:layout_constraintTop_toBottomOf="@id/cClientTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/text_view_requisition_number"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/requisitionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            app:layout_constraintTop_toTopOf="@id/cRequisitionTextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="111"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/cUnitTotalTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            app:layout_constraintTop_toBottomOf="@id/cRequisitionTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/text_view_unit_total"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/unitTotalTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            app:layout_constraintTop_toTopOf="@id/cUnitTotalTextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="15"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/cUnitStatusTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            app:layout_constraintTop_toBottomOf="@id/cUnitTotalTextView"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/text_view_status"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/iconStatus"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/cUnitStatusTextView"
+            android:src="@drawable/sync_state_selector" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

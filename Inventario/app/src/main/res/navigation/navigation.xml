@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.koba.inventario.login.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_menuFragment"
+            app:destination="@id/dashBoardFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dashBoardFragment"
+        android:name="com.koba.inventario.dashboard.DashBoardFragment"
+        android:label="fragment_menu"
+        tools:layout="@layout/fragment_dashboard" >
+        <argument
+            android:name="username"
+            app:argType="string" />
+        <argument
+            android:name="login"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_dashBoardFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_dashBoardFragment_to_validateFragment"
+            app:destination="@id/validateFragment" />
+        <action
+            android:id="@+id/action_dashBoardFragment_to_incomeFragment"
+            app:destination="@id/incomeFragment" />
+        <action
+            android:id="@+id/action_dashBoardFragment_to_positioningFragment"
+            app:destination="@id/positioningFragment" />
+        <action
+            android:id="@+id/action_dashBoardFragment_to_relocationFragment"
+            app:destination="@id/relocationFragment" />
+        <action
+            android:id="@+id/action_dashBoardFragment_to_synchronizationFragment"
+            app:destination="@id/synchronizationFragment" />
+        <action
+            android:id="@+id/action_dashBoardFragment_to_requisitionFragment"
+            app:destination="@id/requisitionFragment" />
+    </fragment>
+    <!--<fragment
+        android:id="@+id/reportFragment"
+        android:name="com.koba.inventario.report.ReportFragment"
+        android:label="fragment_report"
+        tools:layout="@layout/fragment_report" >
+        <argument
+            android:name="username"
+            app:argType="string" />
+        <argument
+            android:name="login"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_reportFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_reportFragment_to_dashBoardFragment"
+            app:destination="@id/dashBoardFragment" />
+        <action
+            android:id="@+id/action_reportFragment_to_validateFragment"
+            app:destination="@id/validateFragment" />
+    </fragment>-->
+    <fragment
+        android:id="@+id/validateFragment"
+        android:name="com.koba.inventario.report.ValidateFragment"
+        android:label="fragment_validate"
+        tools:layout="@layout/fragment_validate" >
+        <argument
+            android:name="username"
+            app:argType="string" />
+        <argument
+            android:name="login"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_validateFragment_to_dashBoardFragment"
+            app:destination="@id/dashBoardFragment" />
+        <!--<action
+            android:id="@+id/action_validateFragment_to_reportFragment"
+            app:destination="@id/reportFragment" />-->
+        <action
+            android:id="@+id/action_validateFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_validateFragment_to_cameraFragment"
+            app:destination="@id/cameraFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/incomeFragment"
+        android:name="com.koba.inventario.income.IncomeFragment"
+        android:label="fragment_income"
+        tools:layout="@layout/fragment_income" >
+        <argument
+            android:name="username"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_incomeFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_incomeFragment_to_dashBoardFragment"
+            app:destination="@id/dashBoardFragment" />
+        <action
+            android:id="@+id/action_incomeFragment_to_cameraFragment"
+            app:destination="@id/cameraFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/pickupFragment"
+        android:name="com.koba.inventario.pickup.PickupFragment"
+        android:label="fragment_pickup"
+        tools:layout="@layout/fragment_pickup" >
+        <argument
+            android:name="username"
+            app:argType="string" />
+        <argument
+            android:name="login"
+            app:argType="string" />
+        <argument
+            android:name="requisition"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_pickupFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_pickupFragment_to_cameraFragment"
+            app:destination="@id/cameraFragment" />
+        <action
+            android:id="@+id/action_pickupFragment_to_requisitionFragment"
+            app:destination="@id/requisitionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/positioningFragment"
+        android:name="com.koba.inventario.positioning.PositioningFragment"
+        android:label="fragment_positioning"
+        tools:layout="@layout/fragment_positioning" >
+        <argument
+            android:name="username"
+            app:argType="string" />
+        <argument
+            android:name="login"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_positioningFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_positioningFragment_to_dashBoardFragment"
+            app:destination="@id/dashBoardFragment" />
+        <action
+            android:id="@+id/action_positioningFragment_to_positionFragment"
+            app:destination="@id/positionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/positionFragment"
+        android:name="com.koba.inventario.positioning.PositionFragment"
+        android:label="fragment_position"
+        tools:layout="@layout/fragment_position" >
+        <argument
+            android:name="username"
+            app:argType="string" />
+        <argument
+            android:name="login"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_positionFragment_to_positioningFragment"
+            app:destination="@id/positioningFragment" />
+        <action
+            android:id="@+id/action_positionFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_positionFragment_to_cameraFragment"
+            app:destination="@id/cameraFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/relocationFragment"
+        android:name="com.koba.inventario.relocation.RelocationFragment"
+        android:label="fragment_relocation"
+        tools:layout="@layout/fragment_relocation" >
+        <argument
+            android:name="username"
+            app:argType="string" />
+        <argument
+            android:name="login"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_relocationFragment_to_dashBoardFragment"
+            app:destination="@id/dashBoardFragment" />
+        <action
+            android:id="@+id/action_relocationFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_relocationFragment_to_cameraFragment"
+            app:destination="@id/cameraFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/synchronizationFragment"
+        android:name="com.koba.inventario.synchronization.SynchronizationFragment"
+        android:label="fragment_synchronization"
+        tools:layout="@layout/fragment_synchronization" >
+        <argument
+            android:name="username"
+            app:argType="string" />
+        <argument
+            android:name="login"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_synchronizationFragment_to_dashBoardFragment"
+            app:destination="@id/dashBoardFragment" />
+        <action
+            android:id="@+id/action_synchronizationFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/cameraFragment"
+        android:name="com.koba.inventario.camera.CameraFragment"
+        android:label="fragment_camera"
+        tools:layout="@layout/fragment_camera" >
+        <argument
+            android:name="invocationSource"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/requisitionFragment"
+        android:name="com.koba.inventario.pickup.RequisitionFragment"
+        android:label="fragment_requisition"
+        tools:layout="@layout/fragment_requisition" >
+        <argument
+            android:name="username"
+            app:argType="string" />
+        <argument
+            android:name="login"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_requisitionFragment_to_pickupFragment"
+            app:destination="@id/pickupFragment" />
+        <action
+            android:id="@+id/action_requisitionFragment_to_dashBoardFragment"
+            app:destination="@id/dashBoardFragment" />
+        <action
+            android:id="@+id/action_requisitionFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_requisitionFragment_to_cameraFragment"
+            app:destination="@id/cameraFragment" />
+    </fragment>
+</navigation>
