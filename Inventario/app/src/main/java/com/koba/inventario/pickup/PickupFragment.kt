@@ -85,6 +85,24 @@ class PickupFragment : Fragment() {
         novelty = view.findViewById(R.id.edit_text_novelty)
         progressBar = view.findViewById(R.id.progressBar)
 
+        barCodeProduct.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                barCodeProduct.setText(barCodeProduct.text.substring(0, barCodeProduct.text.length-1))
+                barCodeLocation.requestFocus()
+                activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+            }
+            false
+        })
+
+        barCodeLocation.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                barCodeLocation.setText(barCodeLocation.text.substring(0, barCodeLocation.text.length-1))
+                novelty.requestFocus()
+                activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+            }
+            false
+        })
+
         syncButton.isEnabled = false
 
         username.text = "¡Hola, "+args.username+"!"

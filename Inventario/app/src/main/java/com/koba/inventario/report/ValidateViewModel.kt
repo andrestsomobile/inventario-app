@@ -111,7 +111,7 @@ class ValidateViewModel: ViewModel() {
 
     fun clearModel(){
         _validateResultLiveData.value = null
-        _validateServiceCreateResultLiveData.value = false
+        _validateServiceCreateResultLiveData.value = null
     }
 
     fun findAllInventory(){

@@ -100,6 +100,24 @@ class PositionFragment : Fragment() {
             }
         }
 
+        barCodeProduct.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                barCodeProduct.setText(barCodeProduct.text.substring(0, barCodeProduct.text.length-1))
+                barCodeLocation.requestFocus()
+                activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+            }
+            false
+        })
+
+        barCodeLocation.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                barCodeLocation.setText(barCodeLocation.text.substring(0, barCodeLocation.text.length-1))
+                amountProduct.requestFocus()
+                activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+            }
+            false
+        })
+
         saveButton.setOnClickListener {
             progressBar.visibility = View.VISIBLE
             var required = true

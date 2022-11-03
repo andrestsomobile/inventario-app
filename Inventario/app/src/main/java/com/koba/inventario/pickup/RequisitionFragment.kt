@@ -107,6 +107,13 @@ class RequisitionFragment : Fragment() {
             }
         })
 
+        requisitionCode.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                requisitionCode.setText(requisitionCode.text.substring(0, requisitionCode.text.length-1))
+            }
+            false
+        })
+
         requisitionSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 filter(query)

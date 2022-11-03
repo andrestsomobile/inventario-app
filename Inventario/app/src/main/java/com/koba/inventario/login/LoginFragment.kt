@@ -42,8 +42,8 @@ class LoginFragment : Fragment() {
         progressBar = view.findViewById(R.id.progressBar)
         loginbutton = view.findViewById(R.id.button_login)
 
-        username.setText("sistemas")
-        password.setText("sanapi96")
+        //username.setText("sistemas")
+        //password.setText("sanapi96")
         loginbutton.setOnClickListener {
             progressBar.visibility = View.VISIBLE
             if (TextUtils.isEmpty(username.text.toString()) || TextUtils.isEmpty(password.text.toString())) {

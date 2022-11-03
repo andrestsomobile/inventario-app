@@ -82,6 +82,24 @@ class ValidateFragment : Fragment() {
         amountProduct = view.findViewById(R.id.edit_text_amount)
         spinnerInventory = view.findViewById(R.id.spinner_inventory)
 
+        barCodeLocation.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                barCodeLocation.setText(barCodeLocation.text.substring(0, barCodeLocation.text.length-1))
+                barCodeProduct.requestFocus()
+                activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+            }
+            false
+        })
+
+        barCodeProduct.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                barCodeProduct.setText(barCodeProduct.text.substring(0, barCodeProduct.text.length-1))
+                amountProduct.requestFocus()
+                activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+            }
+            false
+        })
+
         spinnerInventory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -191,7 +209,7 @@ class ValidateFragment : Fragment() {
                 viewModel.clearModel()
                 viewModel.findAllInventory()
                 this.dataValidateList = ArrayList()
-            } else if(result != null  && result){
+            } else if(result != null  && !result){
                 reference = ""
                 location = ""
                 amount = ""
@@ -199,6 +217,8 @@ class ValidateFragment : Fragment() {
                 viewModel.findAllInventory()
                 if(viewModel.validateLiveData != null && viewModel.validateLiveData.value != null) {
                     Toast.makeText(requireContext(), viewModel.validateLiveData.value.toString(), Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(requireContext(), "Error al crear el registro", Toast.LENGTH_LONG).show()
                 }
                 viewModel.clearModel()
             }

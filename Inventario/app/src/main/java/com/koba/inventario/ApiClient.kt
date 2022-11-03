@@ -15,8 +15,8 @@ object ApiClient {
                 OkHttpClient.Builder().addInterceptor(httpLoggingInterceptor).build()
             return Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("http://34.195.71.159:8085/sglkoba/")
-                //.baseUrl("http://10.1.54.245:8080/sglpruebas/")
+                //.baseUrl("http://34.195.71.159:8085/sglkoba/")
+                .baseUrl("http://10.1.54.245:8080/sglpruebas/")
                 .client(okHttpClient)
                 .build()
         }

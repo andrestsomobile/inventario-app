@@ -86,6 +86,33 @@ class RelocationFragment : Fragment() {
         user = args.login
         viewModel.findByUser(args.username)
 
+        barCodeProduct.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                barCodeProduct.setText(barCodeProduct.text.substring(0, barCodeProduct.text.length-1))
+                barCodeOrigin.requestFocus()
+                activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+            }
+            false
+        })
+
+        barCodeOrigin.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                barCodeOrigin.setText(barCodeOrigin.text.substring(0, barCodeOrigin.text.length-1))
+                barCodeDestination.requestFocus()
+                activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+            }
+            false
+        })
+
+        barCodeDestination.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                barCodeDestination.setText(barCodeDestination.text.substring(0, barCodeDestination.text.length-1))
+                amountProduct.requestFocus()
+                activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+            }
+            false
+        })
+
         modifyButton.setOnClickListener {
             progressBar.visibility = View.VISIBLE
             var required = true
