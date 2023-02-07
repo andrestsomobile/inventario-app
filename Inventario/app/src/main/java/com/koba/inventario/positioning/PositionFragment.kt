@@ -195,6 +195,7 @@ class PositionFragment : Fragment() {
             Toast.makeText(requireContext(), getString(R.string.sync_complete), Toast.LENGTH_SHORT)
                 .show()
             syncButton.isEnabled = false
+            viewModel.findByUser(user)
         }
 
     }
@@ -284,7 +285,7 @@ class PositionFragment : Fragment() {
             }
         }
         viewModel.positionUpdateLiveData.observe(viewLifecycleOwner) { result ->
-            if(result != null && !saved) {
+            if(result != null && !saved &&  amountProduct.text.isNotEmpty()) {
                 if (result) {
                     viewModel.update(barCodeProduct.text.toString(),barCodeLocation.text.toString(),user,amountProduct.text.toString().toInt(), trafficIdSelected.trafficId!!)
                 } else {
@@ -317,7 +318,15 @@ class PositionFragment : Fragment() {
 
     private fun save(barcodeProduct: String,barcodeLocation: String,user: String, amount :String, trafficIdSelected: Int) {
         saved = false
-        viewModel.createPositionService(trafficIdSelected,barcodeProduct,barcodeLocation,amount.toInt(),user)
+        var amountInt = 0;
+
+        try {
+            amountInt = amount.toInt();
+        } catch(ex: Exception) {
+            Toast.makeText(requireContext(), getString(R.string.required_number_amount), Toast.LENGTH_SHORT).show()
+        }
+
+        viewModel.createPositionService(trafficIdSelected,barcodeProduct,barcodeLocation,amountInt,user)
     }
 
     private fun saveTraffic(trafficIdSelected: Int) {

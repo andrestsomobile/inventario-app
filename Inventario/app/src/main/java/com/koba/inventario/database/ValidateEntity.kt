@@ -11,5 +11,6 @@ data class ValidateEntity(
     val barcodeLocation: String,
     val amount : String,
     val user: String,
+    val id: String,
     val indSync: Int
 )

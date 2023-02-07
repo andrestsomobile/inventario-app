@@ -80,4 +80,5 @@
     <string name="response_ok">SUCESS</string>
     <string name="text_view_inventario">Inventario</string>
     <string name="required_save_product">Debe adicionar al menos un producto</string>
+    <string name="required_number_amount">La cantidad debe ser numérica</string>
 </resources>

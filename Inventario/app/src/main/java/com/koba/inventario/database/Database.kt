@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(entities = [IncomeEntity::class,PickupEntity::class,PositionEntity::class,RelocationEntity::class,ValidateEntity::class,TrafficEntity::class],
-    version = 2)
+    version = 4)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun incomeDao(): IncomeDao
     abstract fun pickupDao(): PickupDao
@@ -30,7 +30,7 @@ abstract class AppDatabase : RoomDatabase() {
                 val builder = Room.databaseBuilder(
                     context,
                     AppDatabase::class.java, "database-name"
-                )
+                ).fallbackToDestructiveMigration()
                 val instance = builder.build()
                 INSTANCE = instance
                 return instance

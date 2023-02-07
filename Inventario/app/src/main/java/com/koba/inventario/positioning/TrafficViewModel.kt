@@ -52,11 +52,21 @@ class TrafficViewModel: ViewModel() {
     fun update(trafficCode: Int,user: String) {
         viewModelScope.launch {
             val trafficUpdateProduct = database.trafficDao().findByTrafficCode(trafficCode,user)
-            val product: TrafficEntity = trafficUpdateProduct[0]
-            database.trafficDao().update(
-                TrafficEntity(
-                    product.trafficId,trafficCode, user,1
-            ))
+
+            if(trafficUpdateProduct != null && trafficUpdateProduct.isNotEmpty()) {
+                val product: TrafficEntity = trafficUpdateProduct[0]
+                database.trafficDao().update(
+                    TrafficEntity(
+                        product.trafficId,trafficCode, user,1
+                    ))
+            } else {
+                database.trafficDao().create(
+                    TrafficEntity(
+                        0,trafficCode,user, 1
+                    )
+                )
+            }
+
             _createdResultLiveData.value = true
         }
     }

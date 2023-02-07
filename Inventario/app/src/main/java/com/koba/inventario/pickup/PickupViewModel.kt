@@ -8,6 +8,7 @@ import com.koba.inventario.ApiClient
 import com.koba.inventario.database.AppDatabase
 import com.koba.inventario.database.IncomeEntity
 import com.koba.inventario.database.PickupEntity
+import com.koba.inventario.database.ValidateEntity
 import com.koba.inventario.service.ServiceResponse
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -38,6 +39,10 @@ class PickupViewModel: ViewModel() {
     fun findByUser(user: String) {
         viewModelScope.launch {
             val pickupSync = database.pickupDao().findPickupByIndSync(1,user)
+
+            pickupSync.forEach {
+                createPickupService(it.requisitionId,it.requisitionNumber,it.novelty, it.barcodeProduct, it.barcodeLocation)
+            }
             _syncResultLiveData.value = pickupSync.isNotEmpty()
         }
     }
@@ -49,25 +54,31 @@ class PickupViewModel: ViewModel() {
         }
     }
 
-    fun update(barcodeProduct: String,barcodeLocation: String, user: String, novelty : String, amount: Int) {
+    fun update(requisitionId: String,barcodeProduct: String,barcodeLocation: String, user: String, novelty : String, requisitionNumber: String) {
         viewModelScope.launch {
             val pickupUpdateProduct = database.pickupDao().findByBarcodeProduct(barcodeProduct,barcodeLocation,user)
-            var product: PickupEntity = pickupUpdateProduct[0]
-            database.pickupDao().update(
-                PickupEntity(
-                    product.pickupId,barcodeProduct,barcodeLocation, user, product.amount+amount,novelty ,1
-            ))
+            pickupUpdateProduct.forEach {
+                database.pickupDao().delete(
+                    PickupEntity(
+                        it.pickupId,barcodeProduct,barcodeLocation, user, requisitionNumber,novelty, requisitionId ,1
+                    )
+                )
+            }
             _createdResultLiveData.value = true
         }
     }
 
-    fun create(barcodeProduct: String,barcodeLocation: String, user: String,amount: Int, novelty : String, indSync: Int) {
+    fun create(requisitionId: String,barcodeProduct: String,barcodeLocation: String, user: String,requisitionNumber: String, novelty : String) {
         viewModelScope.launch {
-            database.pickupDao().create(
-                PickupEntity(
-                    0,barcodeProduct,barcodeLocation, user, amount, novelty, indSync
+            val pickupList = database.pickupDao().findById(barcodeProduct,barcodeLocation,requisitionNumber,novelty,requisitionId)
+
+            if(pickupList == null && pickupList.isEmpty()) {
+                database.pickupDao().create(
+                    PickupEntity(
+                        0,barcodeProduct,barcodeLocation, user, requisitionNumber, novelty, requisitionId, 1
+                    )
                 )
-            )
+            }
             _createdResultLiveData.value = true
         }
     }
@@ -85,6 +96,7 @@ class PickupViewModel: ViewModel() {
                         pickupMessage = response.body()?.message.toString()
                         _pickupServiceCreateResultLiveData.value = true
                         _pickupResultLiveData.value = pickupMessage
+                        update(requisitionId,productCode,position, "", novelty, requisitionNumber)
                     } else {
                         pickupMessage =  response.body()?.message.toString()
                         _pickupServiceCreateResultLiveData.value = false
@@ -93,6 +105,7 @@ class PickupViewModel: ViewModel() {
                 }
 
                 override fun onFailure(call: Call<ServiceResponse?>, t: Throwable) {
+                    create(requisitionId,productCode,position, "", novelty, requisitionNumber)
                     pickupMessage = "Fallo en el servicio, intente de nuevamente"
                     _pickupServiceCreateResultLiveData.value = false
                 }

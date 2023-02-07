@@ -174,6 +174,7 @@ class ValidateFragment : Fragment() {
             Toast.makeText(requireContext(), getString(R.string.sync_complete), Toast.LENGTH_SHORT)
                 .show()
             syncButton.isEnabled = false
+            viewModel.findByUser(user);
         }
 
     }
@@ -200,7 +201,6 @@ class ValidateFragment : Fragment() {
                     Toast.makeText(requireContext(), "Registro guardado", Toast.LENGTH_LONG).show()
                 }
 
-                viewModel.create(reference,  location, user, amount, 1);
                 spinnerInventory.setSelection(0)
                 barCodeProduct.text.clear()
                 barCodeLocation.text.clear()
@@ -210,6 +210,7 @@ class ValidateFragment : Fragment() {
                 viewModel.findAllInventory()
                 this.dataValidateList = ArrayList()
             } else if(result != null  && !result){
+                syncButton.isEnabled = true
                 reference = ""
                 location = ""
                 amount = ""

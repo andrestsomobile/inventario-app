@@ -110,6 +110,12 @@ class RequisitionFragment : Fragment() {
         requisitionCode.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
                 requisitionCode.setText(requisitionCode.text.substring(0, requisitionCode.text.length-1))
+                requisitionCode.clearFocus()
+
+                if(!requisitionCode.text.toString().isEmpty()) {
+                    viewModel.findRequisitionList(requisitionCode.text.toString(),user)
+                }
+                activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
             }
             false
         })

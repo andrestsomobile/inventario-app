@@ -14,9 +14,13 @@ interface PickupDao {
     @Query("SELECT * FROM pickup WHERE barcodeProduct = :barcodeProduct AND barcodeLocation = :barcodeLocation AND user = :user")
     suspend fun findByBarcodeProduct(barcodeProduct: String,barcodeLocation: String, user: String) : List<PickupEntity>
 
+    @Query("SELECT * FROM pickup WHERE barcodeProduct = :barcodeProduct " +
+            "AND barcodeLocation = :barcodeLocation AND requisitionNumber = :requisitionNumber AND novelty = :novelty AND requisitionId = :requisitionId")
+    suspend fun findById(barcodeProduct: String,barcodeLocation: String, requisitionNumber: String, novelty: String, requisitionId: String) : List<PickupEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun create(entity: PickupEntity)
 
     @Update
-    suspend fun update(entity: PickupEntity)
+    suspend fun delete(entity: PickupEntity)
 }

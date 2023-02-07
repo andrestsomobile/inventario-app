@@ -45,6 +45,7 @@ class PickupFragment : Fragment() {
     private var dataRequisitionObjectList : List<RequisitionObjectResponse> = ArrayList<RequisitionObjectResponse>()
     val args : PickupFragmentArgs by navArgs()
     private var saved: Boolean = true
+    private var isDataRequisitionEmpty = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -126,11 +127,12 @@ class PickupFragment : Fragment() {
                         Toast.makeText(requireContext(), getString(R.string.required_field_product), Toast.LENGTH_SHORT).show()
                         required = false
                     }
-                    if (TextUtils.isEmpty(barCodeLocation.text.toString())) {
-                        Toast.makeText(requireContext(), getString(R.string.required_field_location), Toast.LENGTH_SHORT)
-                            .show()
-                        required = false
-                    }
+                    /* if (TextUtils.isEmpty(barCodeLocation.text.toString())) {
+
+                         Toast.makeText(requireContext(), getString(R.string.required_field_location), Toast.LENGTH_SHORT)
+                             .show()
+                         required = false
+                    }*/
                     if (TextUtils.isEmpty(amountProduct.text.toString())) {
                         Toast.makeText(requireContext(), getString(R.string.required_field_amount), Toast.LENGTH_SHORT)
                             .show()
@@ -164,6 +166,7 @@ class PickupFragment : Fragment() {
             Toast.makeText(requireContext(), getString(R.string.sync_complete), Toast.LENGTH_SHORT)
                 .show()
             syncButton.isEnabled = false
+            viewModel.findByUser(user)
         }
 
     }
@@ -189,8 +192,12 @@ class PickupFragment : Fragment() {
                 ).show()
             }
         }
+
         viewModelRequisition.requisitionListLiveData.observe(viewLifecycleOwner) { result ->
-            dataRequisitionObjectList = result[0].requisitionList!!
+            if(isDataRequisitionEmpty) {
+                dataRequisitionObjectList = result[0].requisitionList!!
+                isDataRequisitionEmpty = false
+            }
         }
         viewModelRequisition.requisitionNumberLiveData.observe(viewLifecycleOwner) { result ->
             if (result) {
@@ -220,11 +227,6 @@ class PickupFragment : Fragment() {
         }
         viewModel.pickupUpdateLiveData.observe(viewLifecycleOwner) { result ->
             if(result != null && !saved) {
-                if (result) {
-                    viewModel.update(barCodeProduct.text.toString(),barCodeLocation.text.toString(),user,novelty.text.toString(),amountProduct.text.toString().toInt())
-                } else {
-                    viewModel.create(barCodeProduct.text.toString(),barCodeLocation.text.toString(),user,amountProduct.text.toString().toInt(),novelty.text.toString(),1)
-                }
                 validateRequisitionStatus()
                 barCodeProduct.text.clear()
                 barCodeLocation.text.clear()
@@ -257,6 +259,7 @@ class PickupFragment : Fragment() {
 
     private fun validateRequisitionStatus(){
         var validateStatus = true
+        var pendingProducts = 0;
         for (t in dataRequisitionObjectList) {
             var position = t.refPedido?.refpposicion
             if(t.refPedido?.refpproducto == barCodeProduct.text.toString() &&
@@ -266,7 +269,14 @@ class PickupFragment : Fragment() {
             if(t.refPedido?.status == false && validateStatus){
                 validateStatus = false
             }
+
+            if(t.refPedido?.status == false){
+                pendingProducts += 1;
+            }
         }
+
+        Toast.makeText(requireContext(), "Tiene "+pendingProducts+" productos pendientes por recoger", Toast.LENGTH_SHORT).show()
+
         navController.previousBackStackEntry?.savedStateHandle?.set(
             REQUISITION_CAPTURED_VALUE,args.requisition)
         if(validateStatus){

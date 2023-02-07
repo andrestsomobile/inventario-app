@@ -43,6 +43,11 @@ class PositionViewModel: ViewModel() {
     fun findByUser(user: String) {
         viewModelScope.launch {
             val positionSync = database.positionDao().findPositionByIndSync(1,user)
+
+            positionSync.forEach {
+                createPositionService(it.trafficId, it.barcodeProduct,it.barcodeLocation,it.amount,user )
+            }
+
             _syncResultLiveData.value = positionSync.isNotEmpty()
         }
     }
@@ -57,12 +62,22 @@ class PositionViewModel: ViewModel() {
     fun update(barcodeProduct: String,barcodeLocation: String, user: String,amount: Int,trafficId: Int) {
         viewModelScope.launch {
             val positionUpdateProduct = database.positionDao().findByBarcodeProduct(barcodeProduct,barcodeLocation,user)
-            val product: PositionEntity = positionUpdateProduct[0]
-            database.positionDao().update(
-                PositionEntity(
-                    product.positionId,barcodeProduct,barcodeLocation, user,amount,1,trafficId
-            ))
+
+            if(positionUpdateProduct != null && positionUpdateProduct.isNotEmpty()) {
+                val product: PositionEntity = positionUpdateProduct[0]
+                database.positionDao().update(
+                    PositionEntity(
+                        product.positionId,barcodeProduct,barcodeLocation, user,amount,1,trafficId
+                    ))
+            } else {
+                database.positionDao().create(
+                    PositionEntity(
+                        0,barcodeProduct,barcodeLocation, user,amount, 1,trafficId
+                    )
+                )
+            }
             _createdResultLiveData.value = true
+
         }
     }
 

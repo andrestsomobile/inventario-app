@@ -12,10 +12,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.koba.inventario.R
 import com.koba.inventario.database.AppDatabase
+import com.koba.inventario.pickup.PickupViewModel
+import com.koba.inventario.positioning.PositionViewModel
+import com.koba.inventario.report.ValidateViewModel
 
 class SynchronizationFragment : Fragment() {
 
     private val viewModel: SynchronizationViewModel by activityViewModels()
+    private val viewModelValidation: ValidateViewModel by activityViewModels()
+    private val pickupViewModel: PickupViewModel by activityViewModels()
+    private val positionViewModel: PositionViewModel by activityViewModels()
     private lateinit var username : TextView
     private lateinit var processSyncRecyclerView : RecyclerView
     private lateinit var navController: NavController
@@ -56,7 +62,31 @@ class SynchronizationFragment : Fragment() {
             adapter.setItemsRecyclerView(result)
             progressBar.visibility = View.GONE
         }
+
+        viewModel.syncValidationLiveData.observe(viewLifecycleOwner) { result ->
+            if(result != null && result.isNotEmpty()) {
+                viewModelValidation.findByUser(user)
+            }
+        }
+
+        viewModel.syncPickupLiveData.observe(viewLifecycleOwner) { result ->
+            if(result != null && result.isNotEmpty()) {
+                pickupViewModel.findByUser(user)
+            }
+        }
+
+        viewModel.syncPositionLiveData.observe(viewLifecycleOwner) { result ->
+            if(result != null && result.isNotEmpty()) {
+                positionViewModel.findByUser(user)
+            }
+        }
+
         viewModel.findSynchronizationByUser(user)
+        viewModel.findSynchronizationValidationByUser(user)
+        viewModel.findSynchronizationPickupByUser(user)
+        viewModel.findSynchronizationPositionByUser(user)
+
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.koba.inventario.ApiClient
 import com.koba.inventario.database.AppDatabase
+import com.koba.inventario.database.PositionEntity
 import com.koba.inventario.database.RelocationEntity
 import com.koba.inventario.database.ValidateEntity
 import com.koba.inventario.positioning.TrafficResponse
@@ -45,38 +46,28 @@ class ValidateViewModel: ViewModel() {
 
     fun findByUser(user: String) {
         viewModelScope.launch {
-            val relocationSync = database.validateDao().findValidateByIndSync(1,user)
+            val relocationSync = database?.validateDao().findValidateByIndSync(1,user)
+
+            relocationSync.forEach {
+                createValidationService(it.barcodeProduct,it.barcodeLocation,user, it.amount, it.id)
+            }
             _syncResultLiveData.value = relocationSync.isNotEmpty()
         }
     }
 
-    fun findByProduct(barcodeProduct: String,barcodeLocation: String,user: String){
+    fun update(barcodeProduct: String,barcodeLocation: String, user: String,amount: String, id: String) {
         viewModelScope.launch {
-            val incomeUpdateProduct = database.validateDao().findByBarcodeProduct(barcodeProduct,barcodeLocation,user)
-            _validateUpdateResultLiveData.value = incomeUpdateProduct.isNotEmpty()
-        }
-    }
+            val relocationUpdateProduct = database.validateDao().findByBarcodeProduct(barcodeProduct,barcodeLocation,user,id)
+            if(relocationUpdateProduct != null) {
+                relocationUpdateProduct.forEach {
+                    database.validateDao().delete(
+                        ValidateEntity(
+                            it.validateId,it.barcodeProduct,it.barcodeLocation,it.amount,user,it.id,0
+                        ))
+                }
 
-    fun update(barcodeProduct: String,barcodeLocation: String, user: String,amount: String) {
-        viewModelScope.launch {
-            val relocationUpdateProduct = database.validateDao().findByBarcodeProduct(barcodeProduct,barcodeLocation,user)
-            val product: ValidateEntity = relocationUpdateProduct[0]
-            database.validateDao().update(
-                ValidateEntity(
-                    product.validateId,barcodeProduct,barcodeLocation,amount,user,1
-                ))
-            _createdResultLiveData.value = true
-        }
-    }
-
-    fun create(barcodeProduct: String,barcodeLocation: String, user: String,amount: String, indSync: Int) {
-        viewModelScope.launch {
-            database.validateDao().create(
-                ValidateEntity(
-                    0,barcodeProduct,barcodeLocation,amount,user,indSync
-                )
-            )
-            _createdResultLiveData.value = true
+                _createdResultLiveData.value = true
+            }
         }
     }
 
@@ -93,6 +84,7 @@ class ValidateViewModel: ViewModel() {
                         validateMessage = response.body()?.message.toString()
                         _validateServiceCreateResultLiveData.value = true
                         _validateResultLiveData.value = validateMessage
+                        update(barcodeProduct,barcodeLocation,user,amount,id)
                     } else {
                         validateMessage =  response.body()?.message.toString()
                         _validateServiceCreateResultLiveData.value = false
@@ -101,11 +93,26 @@ class ValidateViewModel: ViewModel() {
                 }
 
                 override fun onFailure(call: Call<ServiceResponse?>, t: Throwable) {
+                    val message = t.message
+                    create(barcodeProduct,barcodeLocation,user, amount, id);
                     validateMessage = "Fallo en el servicio, intente de nuevamente"
                     _validateResultLiveData.value = validateMessage
                     _validateServiceCreateResultLiveData.value = false
                 }
             })
+        }
+    }
+
+    fun create(barcodeProduct: String,barcodeLocation: String,user: String, amount: String, id: String) {
+        viewModelScope.launch {
+            val productList = database?.validateDao().findByBarcodeProduct(barcodeProduct,barcodeLocation,user,amount,id)
+
+            if(productList == null || productList.isEmpty()) {
+                database.validateDao().create(ValidateEntity(
+                    0,barcodeProduct,barcodeLocation, amount,user,id,1
+                ))
+                _createdResultLiveData.value = true
+            }
         }
     }
 

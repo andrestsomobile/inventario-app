@@ -10,7 +10,8 @@ data class PickupEntity(
     val barcodeProduct: String,
     val barcodeLocation: String,
     val user: String,
-    val amount: Int,
+    val requisitionNumber: String,
     val novelty: String,
+    val requisitionId: String,
     val indSync: Int
 )
