@@ -1,5 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw250dp/activity_splash_screen.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw250dp/card_view_items_positioning.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw250dp/card_view_items_process_sync.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw250dp/card_view_items_report.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw250dp/card_view_items_requisition.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw250dp/fragment_camera.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw250dp/fragment_dashboard.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw250dp/fragment_income.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw250dp/fragment_login.xml" value="0.1" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw250dp/fragment_pickup.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw250dp/fragment_position.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw250dp/fragment_positioning.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw250dp/fragment_relocation.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw250dp/fragment_report.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw250dp/fragment_requisition.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw250dp/fragment_synchronization.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw250dp/fragment_validate.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw300dp/activity_main.xml" value="0.3740079365079365" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw300dp/activity_splash_screen.xml" value="0.3740079365079365" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw300dp/card_view_items_positioning.xml" value="0.3740079365079365" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw300dp/card_view_items_process_sync.xml" value="0.3740079365079365" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw300dp/card_view_items_report.xml" value="0.3740079365079365" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw300dp/card_view_items_requisition.xml" value="0.3740079365079365" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw300dp/fragment_camera.xml" value="0.3740079365079365" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw300dp/fragment_dashboard.xml" value="0.3740079365079365" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw300dp/fragment_income.xml" value="0.3740079365079365" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw300dp/fragment_login.xml" value="0.3740079365079365" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw300dp/fragment_pickup.xml" value="0.3740079365079365" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw300dp/fragment_position.xml" value="0.3740079365079365" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw300dp/fragment_positioning.xml" value="0.3740079365079365" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw300dp/fragment_relocation.xml" value="0.3740079365079365" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw300dp/fragment_report.xml" value="0.3740079365079365" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw300dp/fragment_requisition.xml" value="0.3740079365079365" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw300dp/fragment_synchronization.xml" value="0.3740079365079365" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw300dp/fragment_validate.xml" value="0.3740079365079365" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/layout-sw350dp/fragment_login.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/Darwin/Desktop/trabajo zona franca/inventario/inventario-app/Inventario/app/src/main/res/menu/overflow_menu.xml" value="0.20416666666666666" />
+      </map>
+    </option>
+  </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />

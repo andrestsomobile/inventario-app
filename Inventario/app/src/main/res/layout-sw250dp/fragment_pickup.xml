@@ -111,7 +111,7 @@
             android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:enabled="false"
+            android:enabled="true"
             android:inputType="number"
             android:hint="@string/hint_amount"
             app:layout_constraintStart_toStartOf="@+id/barcode_location"

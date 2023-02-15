@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".income.IncomeFragment">
+    tools:context=".pickup.PickupFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -20,25 +20,46 @@
             app:layout_constraintTop_toTopOf="@+id/barcode_product" />
 
         <Button
-            android:id="@+id/button_save_income"
+            android:id="@+id/button_scan_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_button_save"
+            android:text="@string/text_button_scan"
+            android:layout_marginStart="20dp"
+            app:layout_constraintStart_toEndOf="@+id/barcode_location"
+            app:layout_constraintTop_toTopOf="@+id/barcode_location" />
+
+        <Button
+            android:id="@+id/button_save_remove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_button_remove"
             android:layout_marginTop="50dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edit_text_amount" />
+            app:layout_constraintTop_toBottomOf="@+id/edit_text_novelty" />
 
         <TextView
-            android:id="@+id/textViewIncome"
+            android:id="@+id/textViewPickup"
             android:layout_width="250dp"
             android:layout_height="40dp"
-            android:text="@string/text_view_income"
+            android:text="@string/text_view_pickup"
             android:textAlignment="textStart"
             android:textSize="25dp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/username"
             app:layout_constraintTop_toBottomOf="@+id/username" />
+
+        <TextView
+            android:id="@+id/textViewRequisitionNumber"
+            android:layout_width="250dp"
+            android:layout_height="40dp"
+            android:text="@string/text_view_requisitionNumber"
+            android:textAlignment="textStart"
+            android:textSize="25dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/barcode_product"
+            app:layout_constraintStart_toStartOf="@+id/textViewPickup"
+            app:layout_constraintTop_toBottomOf="@+id/textViewPickup" />
 
         <TextView
             android:id="@+id/username"
@@ -69,11 +90,22 @@
             android:id="@+id/barcode_product"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
-            android:enabled="false"
+            android:enabled="true"
             android:layout_marginTop="90dp"
             android:hint="@string/hint_product"
-            app:layout_constraintStart_toStartOf="@+id/textViewIncome"
-            app:layout_constraintTop_toBottomOf="@+id/textViewIncome"
+            app:layout_constraintStart_toStartOf="@+id/textViewPickup"
+            app:layout_constraintTop_toBottomOf="@+id/textViewPickup"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <EditText
+            android:id="@+id/barcode_location"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:enabled="true"
+            android:layout_marginTop="20dp"
+            android:hint="@string/hint_location"
+            app:layout_constraintStart_toStartOf="@+id/barcode_product"
+            app:layout_constraintTop_toBottomOf="@+id/barcode_product"
             app:layout_constraintVertical_chainStyle="packed" />
 
         <EditText
@@ -81,10 +113,22 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:enabled="true"
             android:inputType="number"
             android:hint="@string/hint_amount"
-            app:layout_constraintStart_toStartOf="@+id/barcode_product"
-            app:layout_constraintTop_toBottomOf="@+id/barcode_product"
+            app:layout_constraintStart_toStartOf="@+id/barcode_location"
+            app:layout_constraintTop_toBottomOf="@+id/barcode_location"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <EditText
+            android:id="@+id/edit_text_novelty"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:inputType="text"
+            android:hint="@string/hint_novelty"
+            app:layout_constraintStart_toStartOf="@+id/edit_text_amount"
+            app:layout_constraintTop_toBottomOf="@+id/edit_text_amount"
             app:layout_constraintVertical_chainStyle="packed" />
 
         <ProgressBar
@@ -99,6 +143,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:visibility="gone"/>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
