@@ -171,10 +171,16 @@ class ValidateFragment : Fragment() {
         }
 
         syncButton.setOnClickListener {
-            Toast.makeText(requireContext(), getString(R.string.sync_complete), Toast.LENGTH_SHORT)
-                .show()
+
             syncButton.isEnabled = false
             viewModel.findByUser(user);
+
+            if(viewModel.validateLiveData != null && viewModel.validateLiveData.value != null) {
+                Toast.makeText(requireContext(), viewModel.validateLiveData.value.toString(), Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(requireContext(), getString(R.string.sync_complete), Toast.LENGTH_SHORT)
+                    .show()
+            }
         }
 
     }
