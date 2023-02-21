@@ -5,10 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.koba.inventario.ApiClient
-import com.koba.inventario.database.AppDatabase
-import com.koba.inventario.database.PositionEntity
-import com.koba.inventario.database.RelocationEntity
-import com.koba.inventario.database.ValidateEntity
+import com.koba.inventario.database.*
 import com.koba.inventario.positioning.TrafficResponse
 import com.koba.inventario.positioning.TrafficUiModel
 import com.koba.inventario.service.ServiceResponse
@@ -28,8 +25,8 @@ class ValidateViewModel: ViewModel() {
     private val _validateUpdateResultLiveData = MutableLiveData<Boolean?>(null)
     val validateUpdateLiveData: LiveData<Boolean?> = _validateUpdateResultLiveData
 
-    private val _validateServiceCreateResultLiveData = MutableLiveData<Boolean?>(null)
-    val validateServiceCreateLiveData: LiveData<Boolean?> = _validateServiceCreateResultLiveData
+    private val _validateServiceCreateResultLiveData = MutableLiveData<Boolean>(null)
+    val validateServiceCreateLiveData: LiveData<Boolean> = _validateServiceCreateResultLiveData
 
     private val _validateResultLiveData = MutableLiveData<String>()
     val validateLiveData: LiveData<String> = _validateResultLiveData
@@ -40,26 +37,47 @@ class ValidateViewModel: ViewModel() {
     private val _validateInventoryLiveData = MutableLiveData(false)
     val validateInventoryLiveData: LiveData<Boolean> = _validateInventoryLiveData
 
+    private val _validateSyncData = MutableLiveData<Boolean>(null)
+    val validateSyncData: LiveData<Boolean> = _validateSyncData
+
     fun setDataBase(database: AppDatabase) {
         this.database = database
     }
 
-    fun findByUser(user: String) {
+    fun clearData() {
+        _validateServiceCreateResultLiveData.value = null
+        _validateResultLiveData.value = null
+    }
+
+    fun findByUser(user: String, sync: String) {
         viewModelScope.launch {
             val relocationSync = database?.validateDao().findValidateByIndSync(1,user)
 
+            val relocationSyncCopy = database?.validateDao().findValidateByIndSyncCopy(1,user)
+
             relocationSync.forEach {
-                createValidationService(it.barcodeProduct,it.barcodeLocation,user, it.amount, it.id)
+                _validateSyncData.value = true;
+                createValidationService(it.barcodeProduct,it.barcodeLocation,user, it.amount, it.id, "inventario", sync)
             }
+
+            /*relocationSyncCopy.forEach {
+                createValidationService(it.barcodeProduct,it.barcodeLocation,user, it.amount, it.id, "inventario_backup", sync)
+            }*/
             _syncResultLiveData.value = relocationSync.isNotEmpty()
         }
     }
 
     fun update(barcodeProduct: String,barcodeLocation: String, user: String,amount: String, id: String) {
         viewModelScope.launch {
-            val relocationUpdateProduct = database.validateDao().findByBarcodeProduct(barcodeProduct,barcodeLocation,user,id)
+            val relocationUpdateProduct = database.validateDao().findByBarcodeProduct(barcodeProduct,barcodeLocation,user,amount,id)
+
             if(relocationUpdateProduct != null) {
+
                 relocationUpdateProduct.forEach {
+                    database.validateDao().createCopy(ValidateBackupEntity(
+                        0,it.barcodeProduct,it.barcodeLocation, it.amount,user,it.id,1
+                    ))
+
                     database.validateDao().delete(
                         ValidateEntity(
                             it.validateId,it.barcodeProduct,it.barcodeLocation,it.amount,user,it.id,0
@@ -71,11 +89,12 @@ class ValidateViewModel: ViewModel() {
         }
     }
 
-    fun createValidationService(barcodeProduct: String,barcodeLocation: String,user: String, amount: String, id: String){
+    fun createValidationService(barcodeProduct: String,barcodeLocation: String,user: String, amount: String, id: String, table: String, sync: String){
         viewModelScope.launch {
             var validateMessage = ""
-            val relocationResponseCall = ApiClient.validateService.finishValidate(barcodeProduct,barcodeLocation, user, "MOVIL",amount, id)
-            relocationResponseCall?.enqueue(object : retrofit2.Callback<ServiceResponse?> {
+            var relocationResponseCall = ApiClient.validateService.finishValidate(barcodeProduct,barcodeLocation, user, "MOVIL",amount, id, table)
+
+            /*relocationResponseCall?.enqueue(object : retrofit2.Callback<ServiceResponse?> {
                 override fun onResponse(
                     call: Call<ServiceResponse?>,
                     response: Response<ServiceResponse?>
@@ -89,17 +108,47 @@ class ValidateViewModel: ViewModel() {
                         validateMessage =  response.body()?.message.toString()
                         _validateServiceCreateResultLiveData.value = false
                         _validateResultLiveData.value = validateMessage
+                        update(barcodeProduct,barcodeLocation,user,amount,id)
                     }
                 }
 
                 override fun onFailure(call: Call<ServiceResponse?>, t: Throwable) {
                     val message = t.message
-                    create(barcodeProduct,barcodeLocation,user, amount, id);
+                    if(sync != "1") {
+                        create(barcodeProduct,barcodeLocation,user, amount, id);
+                    }
+
                     validateMessage = "Fallo en el servicio, intente de nuevamente"
                     _validateResultLiveData.value = validateMessage
                     _validateServiceCreateResultLiveData.value = false
                 }
-            })
+            })*/
+            try
+            {
+                var response = relocationResponseCall.execute();
+                if (response.isSuccessful and response.body()?.status.equals("SUCESS")) {
+                    validateMessage = response.body()?.message.toString()
+                    _validateServiceCreateResultLiveData.value = true
+                    _validateResultLiveData.value = validateMessage
+                    update(barcodeProduct,barcodeLocation,user,amount,id)
+                } else {
+                    validateMessage =  response.body()?.message.toString()
+                    _validateServiceCreateResultLiveData.value = false
+                    _validateResultLiveData.value = validateMessage
+                    update(barcodeProduct,barcodeLocation,user,amount,id)
+                }
+            }
+            catch (e: Exception)
+            {
+                if(sync != "1") {
+                    create(barcodeProduct,barcodeLocation,user, amount, id);
+                }
+
+                validateMessage = "Fallo en el servicio, intente de nuevamente"
+                _validateResultLiveData.value = validateMessage
+                _validateServiceCreateResultLiveData.value = false
+                e.printStackTrace();
+            }
         }
     }
 

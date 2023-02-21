@@ -8,6 +8,9 @@ interface ValidateDao {
     @Query("SELECT * FROM validate WHERE  indSync = :indSync AND user = :user")
     suspend fun findValidateByIndSync(indSync: Int, user: String) : List<ValidateEntity>
 
+    @Query("SELECT * FROM validate_backup WHERE  indSync = :indSync AND user = :user")
+    suspend fun findValidateByIndSyncCopy(indSync: Int, user: String) : List<ValidateBackupEntity>
+
     @Query("SELECT * FROM validate WHERE user = :user")
     suspend fun findAllValidate(user: String) : List<ValidateEntity>
 
@@ -19,6 +22,9 @@ interface ValidateDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun create(entity: ValidateEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun createCopy(entity: ValidateBackupEntity)
 
     @Update
     suspend fun update(entity: ValidateEntity)

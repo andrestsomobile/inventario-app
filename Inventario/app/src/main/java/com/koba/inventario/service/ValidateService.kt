@@ -16,7 +16,9 @@ interface ValidateService {
                        @Field("usuario") user: String? = null,
                        @Field("terminal") terminal: String? = null,
                        @Field("conteo") amount: String? = null,
-                       @Field("id") id: String? = null): Call<ServiceResponse?>?
+                       @Field("id") id: String? = null,
+                       @Field("table") table: String? = null): Call<ServiceResponse?>
+
 
     @POST("listarInventarioMovil.do")
     fun listInventory(): Call<InventoryResponse?>?

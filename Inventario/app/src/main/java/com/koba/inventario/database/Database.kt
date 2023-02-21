@@ -5,8 +5,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [IncomeEntity::class,PickupEntity::class,PositionEntity::class,RelocationEntity::class,ValidateEntity::class,TrafficEntity::class],
-    version = 4)
+@Database(entities = [IncomeEntity::class,PickupEntity::class,PositionEntity::class,RelocationEntity::class,ValidateEntity::class,ValidateBackupEntity::class,TrafficEntity::class],
+    version = 5)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun incomeDao(): IncomeDao
     abstract fun pickupDao(): PickupDao

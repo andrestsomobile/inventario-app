@@ -1,6 +1,11 @@
 package com.koba.inventario.report
 
+import android.app.AlertDialog
+import android.content.DialogInterface
+import android.os.Build
 import android.os.Bundle
+import android.os.StrictMode
+import android.os.StrictMode.ThreadPolicy
 import android.text.TextUtils
 import android.view.*
 import android.widget.*
@@ -13,7 +18,7 @@ import com.koba.inventario.R
 import com.koba.inventario.camera.BARCODE_CAPTURED_VALUE
 import com.koba.inventario.camera.INVOCATION_SOURCE_VALUE
 import com.koba.inventario.database.AppDatabase
-import com.koba.inventario.positioning.TrafficUiModel
+
 
 const val INVOCATION_SOURCE_VALIDATE_PRODUCT = "INVOCATION_SOURCE_VALIDATE_PRODUCT"
 const val INVOCATION_SOURCE_VALIDATE_LOCATION = "INVOCATION_SOURCE_VALIDATE_LOCATION"
@@ -26,7 +31,7 @@ class ValidateFragment : Fragment() {
     private lateinit var scanProductButton : Button
     private lateinit var scanLocationButton : Button
     private lateinit var saveButton : Button
-    private lateinit var finishButton : Button
+    //private lateinit var finishButton : Button
     private lateinit var barCodeProduct : EditText
     private lateinit var barCodeLocation : EditText
     private lateinit var navController: NavController
@@ -47,6 +52,10 @@ class ValidateFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        if (Build.VERSION.SDK_INT > 9) {
+            val policy = ThreadPolicy.Builder().permitAll().build()
+            StrictMode.setThreadPolicy(policy)
+        }
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_validate, container, false)
         navController = findNavController()
@@ -75,7 +84,7 @@ class ValidateFragment : Fragment() {
         scanProductButton = view.findViewById(R.id.button_scan_product)
         scanLocationButton = view.findViewById(R.id.button_scan_location)
         saveButton = view.findViewById(R.id.button_save_validate)
-        finishButton = view.findViewById(R.id.button_finish_validate)
+        //finishButton = view.findViewById(R.id.button_finish_validate)
         barCodeProduct = view.findViewById(R.id.barcode_product)
         barCodeLocation = view.findViewById(R.id.barcode_location)
         progressBar = view.findViewById(R.id.progressBar)
@@ -128,7 +137,7 @@ class ValidateFragment : Fragment() {
         val args : ValidateFragmentArgs by navArgs()
         username.text = "¡Hola, "+args.username+"!"
         user = args.login
-        viewModel.findByUser(user)
+        viewModel.findByUser(user, "1")
 
         saveButton.setOnClickListener {
             progressBar.visibility = View.VISIBLE
@@ -153,15 +162,43 @@ class ValidateFragment : Fragment() {
                     id = inventoryIdSelected.id.toString();
                 }
                 save(barCodeProduct.text.toString(), barCodeLocation.text.toString(),user,amountProduct.text.toString(), id)
+
+                val dialogBuilder = AlertDialog.Builder(this.context)
+                dialogBuilder.setMessage(getString(R.string.continue_position))
+                    // if the dialog is cancelable
+                    .setCancelable(false)
+                    // positive button text and action
+                    .setPositiveButton(getString(R.string.text_confirm_yes), DialogInterface.OnClickListener {
+                            _dialog, _id -> barCodeProduct.requestFocus();
+
+                            _dialog.cancel();
+
+                    })
+                    // negative button text and action
+                    .setNegativeButton(getString(R.string.text_confirm_no), DialogInterface.OnClickListener {
+
+                            _dialog, _id ->
+                        barCodeLocation.requestFocus(); barCodeLocation.text.clear();
+
+                        _dialog.cancel()
+
+
+                    })
+                val alert = dialogBuilder.create()
+                // set title for alert dialog box
+                alert.setTitle(getString(R.string.text_tittle_confirm))
+                // show alert dialog
+                alert.show()
             }
+            //finish()
             progressBar.visibility = View.INVISIBLE
         }
 
-        finishButton.setOnClickListener {
+        /*finishButton.setOnClickListener {
             progressBar.visibility = View.VISIBLE
             finish()
             progressBar.visibility = View.INVISIBLE
-        }
+        }*/
 
         scanProductButton.setOnClickListener {
             navController.navigate(ValidateFragmentDirections.actionValidateFragmentToCameraFragment(INVOCATION_SOURCE_VALIDATE_PRODUCT))
@@ -173,13 +210,24 @@ class ValidateFragment : Fragment() {
         syncButton.setOnClickListener {
 
             syncButton.isEnabled = false
-            viewModel.findByUser(user);
+            viewModel.findByUser(user, "1");
 
-            if(viewModel.validateLiveData != null && viewModel.validateLiveData.value != null) {
-                Toast.makeText(requireContext(), viewModel.validateLiveData.value.toString(), Toast.LENGTH_LONG).show()
-            } else {
-                Toast.makeText(requireContext(), getString(R.string.sync_complete), Toast.LENGTH_SHORT)
-                    .show()
+            viewModel.validateSyncData.value;
+            if(viewModel.validateServiceCreateLiveData != null && viewModel.validateServiceCreateLiveData.value != null) {
+                if(viewModel.validateServiceCreateLiveData.value == false) {
+                    Toast.makeText(
+                        requireContext(),
+                        viewModel.validateLiveData.value.toString(),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    syncButton.isEnabled = true
+                } else {
+                    Toast.makeText(requireContext(), getString(R.string.sync_complete) + "," + viewModel.validateLiveData.value, Toast.LENGTH_SHORT)
+                        .show()
+
+                    viewModel.clearData()
+                    syncButton.isEnabled = false
+                }
             }
         }
 
@@ -209,7 +257,6 @@ class ValidateFragment : Fragment() {
 
                 spinnerInventory.setSelection(0)
                 barCodeProduct.text.clear()
-                barCodeLocation.text.clear()
                 amountProduct.text.clear()
                 syncButton.isEnabled = true
                 viewModel.clearModel()
@@ -235,16 +282,18 @@ class ValidateFragment : Fragment() {
     }
 
     private fun save(barcodeProduct: String,barcodeLocation: String,user: String, amount :String, id : String) {
-        this.dataValidateList.add(ValidateUiModel(barcodeProduct, barcodeLocation, amount, user, id))
-        Toast.makeText(requireContext(), getString(R.string.save_item_ok), Toast.LENGTH_SHORT).show()
+        //this.dataValidateList.add(ValidateUiModel(barcodeProduct, barcodeLocation, amount, user, id))
+        saved = false
+        viewModel.createValidationService(barcodeProduct,  barcodeLocation, user, amount, id, "inventario", "0")
+        //Toast.makeText(requireContext(), getString(R.string.save_item_ok), Toast.LENGTH_SHORT).show()
         barCodeProduct.text.clear()
-        barCodeLocation.text.clear()
+        //barCodeLocation.text.clear()
         amountProduct.text.clear()
         spinnerInventory.setSelection(0)
         syncButton.isEnabled = true
     }
 
-    private fun finish() {
+    /*private fun finish() {
         var failed = false
         reference = ""
         location = ""
@@ -270,9 +319,9 @@ class ValidateFragment : Fragment() {
         if(!failed) {
             // se debe hacer la conexion a los servicios y por ultimo guardar al room
             saved = false
-            viewModel.createValidationService(reference,  location, user, amount, id)
+            viewModel.createValidationService(reference,  location, user, amount, id, "inventario", "0")
         }
-    }
+    }*/
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)

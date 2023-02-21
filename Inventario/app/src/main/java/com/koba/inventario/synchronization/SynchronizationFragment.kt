@@ -65,7 +65,7 @@ class SynchronizationFragment : Fragment() {
 
         viewModel.syncValidationLiveData.observe(viewLifecycleOwner) { result ->
             if(result != null && result.isNotEmpty()) {
-                viewModelValidation.findByUser(user)
+                viewModelValidation.findByUser(user, "1")
             }
         }
 
