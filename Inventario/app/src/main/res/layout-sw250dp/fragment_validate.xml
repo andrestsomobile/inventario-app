@@ -32,10 +32,21 @@
             android:id="@+id/button_save_validate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="84dp"
             android:text="@string/text_button_save"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.705"
+            app:layout_constraintHorizontal_bias="0.683"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/edit_text_amount" />
+
+        <Button
+            android:id="@+id/button_backup_validate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="84dp"
+            android:text="@string/text_button_backup"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.052"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edit_text_amount" />
 
@@ -122,6 +133,17 @@
             android:layout_width="180dp"
             android:layout_height="45dp"
             android:layout_marginTop="28dp"
+            android:enabled="true"
+            android:hint="@string/hint_location"
+            app:layout_constraintStart_toStartOf="@+id/textViewInventory"
+            app:layout_constraintTop_toBottomOf="@+id/textViewInventory"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <EditText
+            android:id="@+id/barcode_count"
+            android:layout_width="218dp"
+            android:layout_height="65dp"
+            android:layout_marginTop="240dp"
             android:enabled="true"
             android:hint="@string/hint_location"
             app:layout_constraintStart_toStartOf="@+id/textViewInventory"

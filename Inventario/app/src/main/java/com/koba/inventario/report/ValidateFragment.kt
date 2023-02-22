@@ -31,6 +31,7 @@ class ValidateFragment : Fragment() {
     private lateinit var scanProductButton : Button
     private lateinit var scanLocationButton : Button
     private lateinit var saveButton : Button
+    private lateinit var backupButton : Button
     //private lateinit var finishButton : Button
     private lateinit var barCodeProduct : EditText
     private lateinit var barCodeLocation : EditText
@@ -38,6 +39,7 @@ class ValidateFragment : Fragment() {
     private lateinit var progressBar: ProgressBar
     private lateinit var barcodeSource: String
     private lateinit var amountProduct : EditText
+    private lateinit var count : EditText
     private lateinit var spinnerInventory: Spinner
     private lateinit var user: String
     private var dataValidateList : ArrayList<ValidateUiModel> = ArrayList()
@@ -47,6 +49,9 @@ class ValidateFragment : Fragment() {
     private lateinit var amount: String
     private var inventoryIdSelected: InventoryUiModel = InventoryUiModel(null)
     private lateinit var adapter: ArrayAdapter<InventoryUiModel>
+    private var countSave: Int = 0;
+    private var countNoSave: Int = 0;
+    private var idBdLocal: String = "";
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -84,12 +89,14 @@ class ValidateFragment : Fragment() {
         scanProductButton = view.findViewById(R.id.button_scan_product)
         scanLocationButton = view.findViewById(R.id.button_scan_location)
         saveButton = view.findViewById(R.id.button_save_validate)
+        backupButton = view.findViewById(R.id.button_backup_validate)
         //finishButton = view.findViewById(R.id.button_finish_validate)
         barCodeProduct = view.findViewById(R.id.barcode_product)
         barCodeLocation = view.findViewById(R.id.barcode_location)
         progressBar = view.findViewById(R.id.progressBar)
         amountProduct = view.findViewById(R.id.edit_text_amount)
         spinnerInventory = view.findViewById(R.id.spinner_inventory)
+        count = view.findViewById(R.id.barcode_count)
 
         barCodeLocation.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
@@ -207,6 +214,16 @@ class ValidateFragment : Fragment() {
             navController.navigate(ValidateFragmentDirections.actionValidateFragmentToCameraFragment(INVOCATION_SOURCE_VALIDATE_LOCATION))
         }
 
+        backupButton.setOnClickListener {
+            var id = ""
+
+            if(inventoryIdSelected != null && inventoryIdSelected.id != null) {
+                id = inventoryIdSelected.id.toString();
+            }
+
+            viewModel.findByUserBackup(user, "1")
+        }
+
         syncButton.setOnClickListener {
 
             syncButton.isEnabled = false
@@ -247,8 +264,11 @@ class ValidateFragment : Fragment() {
         }
 
         viewModel.validateServiceCreateLiveData.observe(viewLifecycleOwner) { result ->
+            idBdLocal = viewModel.idBdLocal.value.toString();
+            //count.setText()
             if(result != null && result && !saved) {
                 saved = true;
+                countSave += 1;
                 if(viewModel.validateLiveData != null && viewModel.validateLiveData.value != null) {
                     Toast.makeText(requireContext(), viewModel.validateLiveData.value.toString(), Toast.LENGTH_LONG).show()
                 } else {
@@ -263,6 +283,7 @@ class ValidateFragment : Fragment() {
                 viewModel.findAllInventory()
                 this.dataValidateList = ArrayList()
             } else if(result != null  && !result){
+                countNoSave += 1;
                 syncButton.isEnabled = true
                 reference = ""
                 location = ""
@@ -276,6 +297,8 @@ class ValidateFragment : Fragment() {
                 }
                 viewModel.clearModel()
             }
+
+            count.setText("guardados " + countSave + " sin guardar " + countNoSave + " id local " + idBdLocal);
         }
 
         viewModel.findAllInventory()

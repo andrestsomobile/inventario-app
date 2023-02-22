@@ -9,6 +9,9 @@ interface ValidateDao {
     suspend fun findValidateByIndSync(indSync: Int, user: String) : List<ValidateEntity>
 
     @Query("SELECT * FROM validate_backup WHERE  indSync = :indSync AND user = :user")
+    suspend fun findValidateByIndSyncBackup(indSync: Int, user: String) : List<ValidateBackupEntity>
+
+    @Query("SELECT * FROM validate_backup WHERE  indSync = :indSync AND user = :user")
     suspend fun findValidateByIndSyncCopy(indSync: Int, user: String) : List<ValidateBackupEntity>
 
     @Query("SELECT * FROM validate WHERE user = :user")

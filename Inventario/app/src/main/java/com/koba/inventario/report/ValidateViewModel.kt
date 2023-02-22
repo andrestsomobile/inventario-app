@@ -1,5 +1,7 @@
 package com.koba.inventario.report
 
+import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -40,6 +42,9 @@ class ValidateViewModel: ViewModel() {
     private val _validateSyncData = MutableLiveData<Boolean>(null)
     val validateSyncData: LiveData<Boolean> = _validateSyncData
 
+    private val _idBdLocal = MutableLiveData<String>()
+    val idBdLocal: LiveData<String> = _idBdLocal
+
     fun setDataBase(database: AppDatabase) {
         this.database = database
     }
@@ -53,10 +58,11 @@ class ValidateViewModel: ViewModel() {
         viewModelScope.launch {
             val relocationSync = database?.validateDao().findValidateByIndSync(1,user)
 
-            val relocationSyncCopy = database?.validateDao().findValidateByIndSyncCopy(1,user)
+            //val relocationSyncCopy = database?.validateDao().findValidateByIndSyncCopy(1,user)
 
             relocationSync.forEach {
                 _validateSyncData.value = true;
+                _idBdLocal.value += it.barcodeProduct + ":" + it.validateId + ","
                 createValidationService(it.barcodeProduct,it.barcodeLocation,user, it.amount, it.id, "inventario", sync)
             }
 
@@ -64,6 +70,17 @@ class ValidateViewModel: ViewModel() {
                 createValidationService(it.barcodeProduct,it.barcodeLocation,user, it.amount, it.id, "inventario_backup", sync)
             }*/
             _syncResultLiveData.value = relocationSync.isNotEmpty()
+        }
+    }
+
+    fun findByUserBackup(user: String, sync: String) {
+        viewModelScope.launch {
+            val relocationSync = database?.validateDao().findValidateByIndSyncBackup(1,user)
+
+
+            relocationSync.forEach {
+                createBackupValidationService(it.barcodeProduct,it.barcodeLocation,user, it.amount, it.id, "inventario_backup", sync)
+            }
         }
     }
 
@@ -78,6 +95,7 @@ class ValidateViewModel: ViewModel() {
                         0,it.barcodeProduct,it.barcodeLocation, it.amount,user,it.id,1
                     ))
 
+                    println("id: " + it.validateId);
                     database.validateDao().delete(
                         ValidateEntity(
                             it.validateId,it.barcodeProduct,it.barcodeLocation,it.amount,user,it.id,0
@@ -131,6 +149,7 @@ class ValidateViewModel: ViewModel() {
                     _validateServiceCreateResultLiveData.value = true
                     _validateResultLiveData.value = validateMessage
                     update(barcodeProduct,barcodeLocation,user,amount,id)
+                    println(validateMessage);
                 } else {
                     validateMessage =  response.body()?.message.toString()
                     _validateServiceCreateResultLiveData.value = false
@@ -147,6 +166,22 @@ class ValidateViewModel: ViewModel() {
                 validateMessage = "Fallo en el servicio, intente de nuevamente"
                 _validateResultLiveData.value = validateMessage
                 _validateServiceCreateResultLiveData.value = false
+                e.printStackTrace();
+            }
+        }
+    }
+
+    fun createBackupValidationService(barcodeProduct: String,barcodeLocation: String,user: String, amount: String, id: String, table: String, sync: String){
+        viewModelScope.launch {
+            var relocationResponseCall = ApiClient.validateService.finishValidate(barcodeProduct,barcodeLocation, user, "MOVIL",amount, id, table)
+
+            try
+            {
+                var response = relocationResponseCall.execute();
+                print(response)
+            }
+            catch (e: Exception)
+            {
                 e.printStackTrace();
             }
         }
