@@ -31,7 +31,7 @@ class ValidateFragment : Fragment() {
     private lateinit var scanProductButton : Button
     private lateinit var scanLocationButton : Button
     private lateinit var saveButton : Button
-    private lateinit var backupButton : Button
+    //private lateinit var backupButton : Button
     //private lateinit var finishButton : Button
     private lateinit var barCodeProduct : EditText
     private lateinit var barCodeLocation : EditText
@@ -39,7 +39,7 @@ class ValidateFragment : Fragment() {
     private lateinit var progressBar: ProgressBar
     private lateinit var barcodeSource: String
     private lateinit var amountProduct : EditText
-    private lateinit var count : EditText
+    //private lateinit var count : EditText
     private lateinit var spinnerInventory: Spinner
     private lateinit var user: String
     private var dataValidateList : ArrayList<ValidateUiModel> = ArrayList()
@@ -89,14 +89,14 @@ class ValidateFragment : Fragment() {
         scanProductButton = view.findViewById(R.id.button_scan_product)
         scanLocationButton = view.findViewById(R.id.button_scan_location)
         saveButton = view.findViewById(R.id.button_save_validate)
-        backupButton = view.findViewById(R.id.button_backup_validate)
+        //backupButton = view.findViewById(R.id.button_backup_validate)
         //finishButton = view.findViewById(R.id.button_finish_validate)
         barCodeProduct = view.findViewById(R.id.barcode_product)
         barCodeLocation = view.findViewById(R.id.barcode_location)
         progressBar = view.findViewById(R.id.progressBar)
         amountProduct = view.findViewById(R.id.edit_text_amount)
         spinnerInventory = view.findViewById(R.id.spinner_inventory)
-        count = view.findViewById(R.id.barcode_count)
+        //count = view.findViewById(R.id.barcode_count)
 
         barCodeLocation.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
@@ -205,13 +205,6 @@ class ValidateFragment : Fragment() {
             progressBar.visibility = View.VISIBLE
             finish()
             progressBar.visibility = View.INVISIBLE
-        }*/
-
-        scanProductButton.setOnClickListener {
-            navController.navigate(ValidateFragmentDirections.actionValidateFragmentToCameraFragment(INVOCATION_SOURCE_VALIDATE_PRODUCT))
-        }
-        scanLocationButton.setOnClickListener {
-            navController.navigate(ValidateFragmentDirections.actionValidateFragmentToCameraFragment(INVOCATION_SOURCE_VALIDATE_LOCATION))
         }
 
         backupButton.setOnClickListener {
@@ -222,7 +215,16 @@ class ValidateFragment : Fragment() {
             }
 
             viewModel.findByUserBackup(user, "1")
+        }*/
+
+        scanProductButton.setOnClickListener {
+            navController.navigate(ValidateFragmentDirections.actionValidateFragmentToCameraFragment(INVOCATION_SOURCE_VALIDATE_PRODUCT))
         }
+        scanLocationButton.setOnClickListener {
+            navController.navigate(ValidateFragmentDirections.actionValidateFragmentToCameraFragment(INVOCATION_SOURCE_VALIDATE_LOCATION))
+        }
+
+
 
         syncButton.setOnClickListener {
 
@@ -298,7 +300,7 @@ class ValidateFragment : Fragment() {
                 viewModel.clearModel()
             }
 
-            count.setText("guardados " + countSave + " sin guardar " + countNoSave + " id local " + idBdLocal);
+            //count.setText("guardados " + countSave + " sin guardar " + countNoSave + " id local " + idBdLocal);
         }
 
         viewModel.findAllInventory()

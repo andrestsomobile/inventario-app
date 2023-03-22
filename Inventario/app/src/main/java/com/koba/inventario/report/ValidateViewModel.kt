@@ -91,11 +91,11 @@ class ValidateViewModel: ViewModel() {
             if(relocationUpdateProduct != null) {
 
                 relocationUpdateProduct.forEach {
-                    database.validateDao().createCopy(ValidateBackupEntity(
+                    /*database.validateDao().createCopy(ValidateBackupEntity(
                         0,it.barcodeProduct,it.barcodeLocation, it.amount,user,it.id,1
                     ))
 
-                    println("id: " + it.validateId);
+                    println("id: " + it.validateId);*/
                     database.validateDao().delete(
                         ValidateEntity(
                             it.validateId,it.barcodeProduct,it.barcodeLocation,it.amount,user,it.id,0
@@ -189,14 +189,14 @@ class ValidateViewModel: ViewModel() {
 
     fun create(barcodeProduct: String,barcodeLocation: String,user: String, amount: String, id: String) {
         viewModelScope.launch {
-            val productList = database?.validateDao().findByBarcodeProduct(barcodeProduct,barcodeLocation,user,amount,id)
+            //val productList = database?.validateDao().findByBarcodeProduct(barcodeProduct,barcodeLocation,user,amount,id)
 
-            if(productList == null || productList.isEmpty()) {
+            //if(productList == null || productList.isEmpty()) {
                 database.validateDao().create(ValidateEntity(
                     0,barcodeProduct,barcodeLocation, amount,user,id,1
                 ))
                 _createdResultLiveData.value = true
-            }
+            //}
         }
     }
 
