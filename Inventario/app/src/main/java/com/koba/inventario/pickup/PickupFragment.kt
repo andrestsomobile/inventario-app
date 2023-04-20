@@ -255,7 +255,7 @@ class PickupFragment : Fragment() {
 
     private fun save(barcodeProduct: String,barcodeLocation: String,user: String, amount :String, novelty :String) {
         saved = false
-        viewModel.createPickupService(requisitionNumberId,args.requisition,novelty,barcodeProduct,barcodeLocation)
+        viewModel.createPickupService(requisitionNumberId,args.requisition,novelty,barcodeProduct,barcodeLocation, user)
     }
 
     private fun validateRequisitionStatus(){

@@ -41,7 +41,7 @@ class PickupViewModel: ViewModel() {
             val pickupSync = database.pickupDao().findPickupByIndSync(1,user)
 
             pickupSync.forEach {
-                createPickupService(it.requisitionId,it.requisitionNumber,it.novelty, it.barcodeProduct, it.barcodeLocation)
+                createPickupService(it.requisitionId,it.requisitionNumber,it.novelty, it.barcodeProduct, it.barcodeLocation, user)
             }
             _syncResultLiveData.value = pickupSync.isNotEmpty()
         }
@@ -72,18 +72,18 @@ class PickupViewModel: ViewModel() {
         viewModelScope.launch {
             val pickupList = database.pickupDao().findById(barcodeProduct,barcodeLocation,requisitionNumber,novelty,requisitionId)
 
-            if(pickupList == null && pickupList.isEmpty()) {
+            //if(pickupList == null && pickupList.isEmpty()) {
                 database.pickupDao().create(
                     PickupEntity(
                         0,barcodeProduct,barcodeLocation, user, requisitionNumber, novelty, requisitionId, 1
                     )
                 )
-            }
+            //}
             _createdResultLiveData.value = true
         }
     }
 
-    fun createPickupService(requisitionId: String,requisitionNumber: String,novelty: String,productCode: String, position: String){
+    fun createPickupService(requisitionId: String,requisitionNumber: String,novelty: String,productCode: String, position: String, user: String){
         viewModelScope.launch {
             var pickupMessage = ""
             val pickupResponseCall = ApiClient.requisitionService.finishRequisition(requisitionId,requisitionNumber,novelty,productCode,position)
@@ -105,9 +105,10 @@ class PickupViewModel: ViewModel() {
                 }
 
                 override fun onFailure(call: Call<ServiceResponse?>, t: Throwable) {
-                    create(requisitionId,productCode,position, "", novelty, requisitionNumber)
+                    create(requisitionId,productCode,position, user, novelty, requisitionNumber)
                     pickupMessage = "Fallo en el servicio, intente de nuevamente"
                     _pickupServiceCreateResultLiveData.value = false
+                    _pickupResultLiveData.value = pickupMessage
                 }
             })
         }
