@@ -54,7 +54,7 @@ class PickupViewModel: ViewModel() {
         }
     }
 
-    fun update(requisitionId: String,barcodeProduct: String,barcodeLocation: String, user: String, novelty : String, requisitionNumber: String) {
+    fun update(requisitionId: String,barcodeProduct: String,barcodeLocation: String, user: String, requisitionNumber: String, novelty : String) {
         viewModelScope.launch {
             val pickupUpdateProduct = database.pickupDao().findByBarcodeProduct(barcodeProduct,barcodeLocation,user)
             pickupUpdateProduct.forEach {
@@ -96,7 +96,7 @@ class PickupViewModel: ViewModel() {
                         pickupMessage = response.body()?.message.toString()
                         _pickupServiceCreateResultLiveData.value = true
                         _pickupResultLiveData.value = pickupMessage
-                        update(requisitionId,productCode,position, user, novelty, requisitionNumber)
+                        update(requisitionId,productCode,position, user, requisitionNumber, novelty)
                     } else {
                         pickupMessage =  response.body()?.message.toString()
                         _pickupServiceCreateResultLiveData.value = false
@@ -105,7 +105,7 @@ class PickupViewModel: ViewModel() {
                 }
 
                 override fun onFailure(call: Call<ServiceResponse?>, t: Throwable) {
-                    create(requisitionId,productCode,position, user, novelty, requisitionNumber)
+                    create(requisitionId,productCode,position, user, requisitionNumber, novelty)
                     pickupMessage = "Fallo en el servicio, intente de nuevamente"
                     _pickupServiceCreateResultLiveData.value = false
                     _pickupResultLiveData.value = pickupMessage
