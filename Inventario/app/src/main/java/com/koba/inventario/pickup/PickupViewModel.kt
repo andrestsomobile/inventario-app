@@ -96,7 +96,7 @@ class PickupViewModel: ViewModel() {
                         pickupMessage = response.body()?.message.toString()
                         _pickupServiceCreateResultLiveData.value = true
                         _pickupResultLiveData.value = pickupMessage
-                        update(requisitionId,productCode,position, "", novelty, requisitionNumber)
+                        update(requisitionId,productCode,position, user, novelty, requisitionNumber)
                     } else {
                         pickupMessage =  response.body()?.message.toString()
                         _pickupServiceCreateResultLiveData.value = false
