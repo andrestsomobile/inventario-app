@@ -73,17 +73,6 @@ class ValidateViewModel: ViewModel() {
         }
     }
 
-    fun findByUserBackup(user: String, sync: String) {
-        viewModelScope.launch {
-            val relocationSync = database?.validateDao().findValidateByIndSyncBackup(1,user)
-
-
-            relocationSync.forEach {
-                createBackupValidationService(it.barcodeProduct,it.barcodeLocation,user, it.amount, it.id, "inventario_backup", sync)
-            }
-        }
-    }
-
     fun update(barcodeProduct: String,barcodeLocation: String, user: String,amount: String, id: String) {
         viewModelScope.launch {
             val relocationUpdateProduct = database.validateDao().findByBarcodeProduct(barcodeProduct,barcodeLocation,user,amount,id)
@@ -91,11 +80,7 @@ class ValidateViewModel: ViewModel() {
             if(relocationUpdateProduct != null) {
 
                 relocationUpdateProduct.forEach {
-                    /*database.validateDao().createCopy(ValidateBackupEntity(
-                        0,it.barcodeProduct,it.barcodeLocation, it.amount,user,it.id,1
-                    ))
 
-                    println("id: " + it.validateId);*/
                     database.validateDao().delete(
                         ValidateEntity(
                             it.validateId,it.barcodeProduct,it.barcodeLocation,it.amount,user,it.id,0

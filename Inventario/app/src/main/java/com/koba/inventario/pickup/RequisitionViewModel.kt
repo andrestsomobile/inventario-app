@@ -1,5 +1,6 @@
 package com.koba.inventario.pickup
 
+import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
@@ -7,8 +8,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.koba.inventario.ApiClient
+import com.koba.inventario.MainActivity
 import com.koba.inventario.R
 import com.koba.inventario.database.AppDatabase
+import com.koba.inventario.database.DatabaseHandler
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Response
@@ -33,6 +36,7 @@ class RequisitionViewModel: ViewModel() {
 
     private val _requisitionNumberLiveData = MutableLiveData(false)
     val requisitionNumberLiveData: LiveData<Boolean> = _requisitionNumberLiveData
+    //private var databaseHandler: DatabaseHandler = DatabaseHandler()
 
 
     fun setDataBase(database: AppDatabase) {
@@ -99,12 +103,14 @@ class RequisitionViewModel: ViewModel() {
                         _requisitionNumberResultLiveData.value = requisitionNumberObject
                         _requisitionNumberLiveData.value = false
                     } else {
+                        //databaseHandler.add(RequisitionViewModel::class.java.simpleName, "ERROR", "Error findRequisitionNumber " + response.body().toString())
                         _requisitionNumberResultLiveData.value = ""
                         _requisitionNumberLiveData.value = true
                     }
                 }
 
                 override fun onFailure(call: Call<RequisitionNumberResponse?>, t: Throwable) {
+                    //databaseHandler.add(RequisitionViewModel::class.java.simpleName, "Failure", "Error findRequisitionNumber " + t.stackTraceToString())
                     _requisitionNumberLiveData.value = true
                 }
             })

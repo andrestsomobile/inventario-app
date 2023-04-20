@@ -3,20 +3,21 @@ package com.koba.inventario.pickup
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.Bundle
-import android.text.Editable
 import android.text.TextUtils
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.koba.inventario.MainActivity
 import com.koba.inventario.R
 import com.koba.inventario.camera.BARCODE_CAPTURED_VALUE
 import com.koba.inventario.camera.INVOCATION_SOURCE_VALUE
 import com.koba.inventario.database.AppDatabase
+import com.koba.inventario.database.DatabaseHandler
 
 
 const val INVOCATION_SOURCE_PICKUP_PRODUCT = "INVOCATION_SOURCE_PICKUP_PRODUCT"
@@ -46,6 +47,7 @@ class PickupFragment : Fragment() {
     val args : PickupFragmentArgs by navArgs()
     private var saved: Boolean = true
     private var isDataRequisitionEmpty = true
+    //private var databaseHandler: DatabaseHandler = DatabaseHandler()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -85,6 +87,7 @@ class PickupFragment : Fragment() {
         amountProduct = view.findViewById(R.id.edit_text_amount)
         novelty = view.findViewById(R.id.edit_text_novelty)
         progressBar = view.findViewById(R.id.progressBar)
+        requisitionNumberId = ""
 
         barCodeProduct.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
@@ -127,12 +130,7 @@ class PickupFragment : Fragment() {
                         Toast.makeText(requireContext(), getString(R.string.required_field_product), Toast.LENGTH_SHORT).show()
                         required = false
                     }
-                    /* if (TextUtils.isEmpty(barCodeLocation.text.toString())) {
 
-                         Toast.makeText(requireContext(), getString(R.string.required_field_location), Toast.LENGTH_SHORT)
-                             .show()
-                         required = false
-                    }*/
                     if (TextUtils.isEmpty(amountProduct.text.toString())) {
                         Toast.makeText(requireContext(), getString(R.string.required_field_amount), Toast.LENGTH_SHORT)
                             .show()
@@ -140,7 +138,6 @@ class PickupFragment : Fragment() {
                     }
                     if(required){
                         save(barCodeProduct.text.toString(),barCodeLocation.text.toString(),args.username,amountProduct.text.toString(),novelty.text.toString())
-                        //save("053891138391",args.username,amountProduct.text.toString())
                     }
                     progressBar.visibility = View.INVISIBLE
                 })
@@ -172,6 +169,7 @@ class PickupFragment : Fragment() {
     }
 
     private fun initLiveData() {
+
         viewModel.setDataBase(AppDatabase.getDatabase(requireContext().applicationContext))
         viewModel.createdLiveData.observe(viewLifecycleOwner) { result ->
             if (result == true) {
@@ -185,6 +183,7 @@ class PickupFragment : Fragment() {
         }
         viewModelRequisition.requisitionLiveData.observe(viewLifecycleOwner) { result ->
             if (result) {
+                //databaseHandler.add(PickupFragment::class.java.simpleName, "ERROR", getString(R.string.requisition_field_failed))
                 Toast.makeText(
                     requireContext(),
                     getString(R.string.requisition_field_failed),
@@ -201,6 +200,7 @@ class PickupFragment : Fragment() {
         }
         viewModelRequisition.requisitionNumberLiveData.observe(viewLifecycleOwner) { result ->
             if (result) {
+                //databaseHandler.add(PickupFragment::class.java.simpleName, "ERROR", getString(R.string.requisition_number_field_failed))
                 Toast.makeText(
                     requireContext(),
                     getString(R.string.requisition_number_field_failed),
@@ -210,6 +210,7 @@ class PickupFragment : Fragment() {
         }
         viewModelRequisition.requisitionNumberResultLiveData.observe(viewLifecycleOwner) { result ->
             if(result.isEmpty()){
+                //databaseHandler.add(PickupFragment::class.java.simpleName, "ERROR", getString(R.string.requisition_create_failed))
                 Toast.makeText(
                     requireContext(),
                     getString(R.string.requisition_create_failed),
