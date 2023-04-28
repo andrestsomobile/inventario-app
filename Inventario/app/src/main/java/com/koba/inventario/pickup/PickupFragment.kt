@@ -18,6 +18,7 @@ import com.koba.inventario.camera.BARCODE_CAPTURED_VALUE
 import com.koba.inventario.camera.INVOCATION_SOURCE_VALUE
 import com.koba.inventario.database.AppDatabase
 import com.koba.inventario.database.DatabaseHandler
+import com.koba.inventario.database.PickupEntity
 
 
 const val INVOCATION_SOURCE_PICKUP_PRODUCT = "INVOCATION_SOURCE_PICKUP_PRODUCT"
@@ -47,6 +48,7 @@ class PickupFragment : Fragment() {
     val args : PickupFragmentArgs by navArgs()
     private var saved: Boolean = true
     private var isDataRequisitionEmpty = true
+    private var arrProductLocation : List<PickupObject> = ArrayList<PickupObject>()
     //private var databaseHandler: DatabaseHandler = DatabaseHandler()
 
     override fun onCreateView(
@@ -62,17 +64,16 @@ class PickupFragment : Fragment() {
             viewLifecycleOwner) { result ->
             barcodeSource = result
         }
-        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<String>(
-            INVOCATION_SOURCE_VALUE
-        )?.observe(
-            viewLifecycleOwner) { result ->
-            if(result.equals(INVOCATION_SOURCE_PICKUP_PRODUCT)) barCodeProduct.setText(barcodeSource) else barCodeLocation.setText(barcodeSource)
-            validateDataRequisition()
-        }
         setHasOptionsMenu(true)
         initLiveData()
         initViews(view)
         return view
+    }
+
+    fun append(arr: List<PickupObject>, element: PickupObject): List<PickupObject> {
+        val list: MutableList<PickupObject> = arr.toMutableList()
+        list.add(element)
+        return list
     }
 
     private fun initViews(view: View) {
@@ -101,8 +102,29 @@ class PickupFragment : Fragment() {
         barCodeLocation.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
                 barCodeLocation.setText(barCodeLocation.text.substring(0, barCodeLocation.text.length-1))
-                novelty.requestFocus()
+                amountProduct.requestFocus()
                 activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+
+                //Si es 1 vs 1
+                /*var exists = false;
+                for(p in arrProductLocation) {
+                    if(p.barcodeLocation == barCodeLocation.toString() && p.barcodeProduct == barCodeProduct.toString()) {
+                        p.amount = p.amount +1;
+                        exists = true;
+                        break;
+                    }
+                }
+
+                if(!exists) {
+                    val p = PickupObject(barCodeProduct.toString(), barCodeLocation.toString(), 1);
+                    arrProductLocation = append(arrProductLocation, p);
+                }
+                barCodeProduct.requestFocus()
+
+                //SINO
+                amountProduct.requestFocus()
+                */
+
             }
             false
         })
@@ -131,6 +153,7 @@ class PickupFragment : Fragment() {
                         required = false
                     }
 
+                    //Si es 1 vs 1 no es necesaria esta validacion
                     if (TextUtils.isEmpty(amountProduct.text.toString())) {
                         Toast.makeText(requireContext(), getString(R.string.required_field_amount), Toast.LENGTH_SHORT)
                             .show()
@@ -254,8 +277,7 @@ class PickupFragment : Fragment() {
     }
 
     private fun save(barcodeProduct: String,barcodeLocation: String,user: String, amount :String, novelty :String) {
-        saved = false
-        viewModel.createPickupService(requisitionNumberId,args.requisition,novelty,barcodeProduct,barcodeLocation, user)
+        validateDataRequisition(barcodeProduct,barcodeLocation,user, amount, novelty)
     }
 
     private fun validateRequisitionStatus(){
@@ -287,7 +309,7 @@ class PickupFragment : Fragment() {
         }
     }
 
-    private fun validateDataRequisition(){
+    private fun validateDataRequisition(barcodeProduct: String,barcodeLocation: String,user: String, amount :String, novelty :String){
         var validate = true
         if(barCodeProduct.text.toString() != "" && barCodeLocation.text.toString() != ""){
             for (t in dataRequisitionObjectList) {
@@ -305,6 +327,15 @@ class PickupFragment : Fragment() {
                     getString(R.string.requisition_list_field_failed),
                     Toast.LENGTH_SHORT
                 ).show()
+            } else {
+                saved = false
+                //Si es multiple
+                viewModel.createPickupService(requisitionNumberId,args.requisition,novelty,barcodeProduct,barcodeLocation, user)
+
+                //Si es 1 vs 1
+                /*for(p in arrProductLocation) {
+                    viewModel.createPickupService(requisitionNumberId,args.requisition,novelty,p.barcodeProduct,p.barcodeLocation, user)
+                }*/
             }
         }
     }

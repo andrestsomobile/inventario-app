@@ -15,7 +15,7 @@
     <string name="requisition_field_failed">No se encontraron datos del pedido especificado</string>
     <string name="requisition_field_invalid">El pedido ya se encuentra finalizado</string>
     <string name="requisition_number_field_failed">No se encontro datos de registro pedido</string>
-    <string name="requisition_list_field_failed">No se ecuentra el producto para el pedido</string>
+    <string name="requisition_list_field_failed">No se ecuentra el producto, ubicacion, cantidad para el pedido</string>
     <string name="requisition_create_failed">Fallo al crear el registro del pedido</string>
     <string name="sync_complete">Datos Sincronizados</string>
     <string name="sync_fail">Error de sincronizacion, Intente de nuevo</string>
