@@ -316,8 +316,8 @@ class PickupFragment : Fragment() {
                 var position = t.refPedido?.refpposicion
                 var amountPosition = t.refPedido?.refpcantidad?.toBigDecimal()?.toInt().toString()
                 if(t.refPedido?.refpproducto == barCodeProduct.text.toString() &&
-                    position == barCodeLocation.text.toString()){
-                    amountProduct.setText(amountPosition)
+                    position == barCodeLocation.text.toString() &&
+                    amount == amountProduct.text.toString()){
                     validate = false
                 }
             }
