@@ -14,8 +14,8 @@
             android:id="@+id/button_scan_product"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_button_scan"
             android:layout_marginStart="20dp"
+            android:text="@string/text_button_scan"
             app:layout_constraintStart_toEndOf="@+id/barcode_product"
             app:layout_constraintTop_toTopOf="@+id/barcode_product" />
 
@@ -23,8 +23,8 @@
             android:id="@+id/button_scan_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_button_scan"
             android:layout_marginStart="20dp"
+            android:text="@string/text_button_scan"
             app:layout_constraintStart_toEndOf="@+id/barcode_location"
             app:layout_constraintTop_toTopOf="@+id/barcode_location" />
 
@@ -32,8 +32,8 @@
             android:id="@+id/button_save_remove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_button_remove"
             android:layout_marginTop="50dp"
+            android:text="@string/text_button_remove"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edit_text_novelty" />
@@ -65,8 +65,8 @@
             android:id="@+id/username"
             android:layout_width="200dp"
             android:layout_height="70dp"
-            android:paddingEnd="10dp"
             android:fontFamily="sans-serif-medium"
+            android:paddingEnd="10dp"
             android:text="@string/text_view_user_name"
             android:textAlignment="textStart"
             android:textSize="40dp"
@@ -88,8 +88,8 @@
             android:id="@+id/barcode_product"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:enabled="true"
             android:layout_marginTop="90dp"
+            android:enabled="true"
             android:hint="@string/hint_product"
             app:layout_constraintStart_toStartOf="@+id/textViewPickup"
             app:layout_constraintTop_toBottomOf="@+id/textViewPickup"
@@ -99,8 +99,8 @@
             android:id="@+id/barcode_location"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:enabled="true"
             android:layout_marginTop="20dp"
+            android:enabled="true"
             android:hint="@string/hint_location"
             app:layout_constraintStart_toStartOf="@+id/barcode_product"
             app:layout_constraintTop_toBottomOf="@+id/barcode_product"
@@ -112,8 +112,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:enabled="true"
-            android:inputType="number"
             android:hint="@string/hint_amount"
+            android:inputType="number"
             app:layout_constraintStart_toStartOf="@+id/barcode_location"
             app:layout_constraintTop_toBottomOf="@+id/barcode_location"
             app:layout_constraintVertical_chainStyle="packed" />
@@ -123,8 +123,8 @@
             android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:inputType="text"
             android:hint="@string/hint_novelty"
+            android:inputType="text"
             app:layout_constraintStart_toStartOf="@+id/edit_text_amount"
             app:layout_constraintTop_toBottomOf="@+id/edit_text_amount"
             app:layout_constraintVertical_chainStyle="packed" />
@@ -132,15 +132,23 @@
         <ProgressBar
             android:id="@+id/progressBar"
             style="@android:style/Widget.Material.ProgressBar.Large"
-            android:indeterminate="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:indeterminate="true"
             android:progress="25"
-            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:visibility="gone"/>
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Spinner
+            android:id="@+id/spinnerAlistamietno"
+            android:layout_width="52dp"
+            android:layout_height="26dp"
+            tools:layout_editor_absoluteX="262dp"
+            tools:layout_editor_absoluteY="135dp"
+            />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

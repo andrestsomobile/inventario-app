@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.*
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
@@ -19,6 +20,7 @@ import com.koba.inventario.camera.INVOCATION_SOURCE_VALUE
 import com.koba.inventario.database.AppDatabase
 import com.koba.inventario.database.DatabaseHandler
 import com.koba.inventario.database.PickupEntity
+import com.koba.inventario.positioning.TrafficUiModel
 
 
 const val INVOCATION_SOURCE_PICKUP_PRODUCT = "INVOCATION_SOURCE_PICKUP_PRODUCT"
@@ -40,6 +42,9 @@ class PickupFragment : Fragment() {
     private lateinit var novelty : EditText
     private lateinit var navController: NavController
     private lateinit var progressBar: ProgressBar
+    private lateinit var spinner: Spinner
+    private lateinit var adaptador: ArrayAdapter<String>
+    //private var elementos : List<String> = listOf("1 a 1", "Multiple")
     private lateinit var barcodeSource: String
     private lateinit var user: String
     private lateinit var requisitionNumberId: String
@@ -88,7 +93,9 @@ class PickupFragment : Fragment() {
         amountProduct = view.findViewById(R.id.edit_text_amount)
         novelty = view.findViewById(R.id.edit_text_novelty)
         progressBar = view.findViewById(R.id.progressBar)
+        spinner = view.findViewById(R.id.spinnerAlistamietno)
         requisitionNumberId = ""
+
 
         barCodeProduct.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
@@ -213,6 +220,14 @@ class PickupFragment : Fragment() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
+        }
+
+
+
+        viewModelRequisition.requisitionListLiveData.observe(viewLifecycleOwner) { result ->
+            val elementos = listOf("1 a 1", "Multiple")
+            adaptador = ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,elementos)
+            spinner.adapter = adaptador
         }
 
         viewModelRequisition.requisitionListLiveData.observe(viewLifecycleOwner) { result ->

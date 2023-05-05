@@ -18,6 +18,7 @@ object ApiClient {
                 //.baseUrl("http://34.202.43.93:8085/sgljde/")
                 //.baseUrl("http://10.1.54.112:8080/sgljdepruebas/")
                 .baseUrl("http://3.137.62.56:5500/sgljde/")
+                //.baseUrl("http://3.137.62.56:5500/sglzf/")
                 .client(okHttpClient)
                 .build()
         }
