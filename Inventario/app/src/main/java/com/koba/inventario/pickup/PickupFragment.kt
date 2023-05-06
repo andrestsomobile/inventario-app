@@ -226,7 +226,7 @@ class PickupFragment : Fragment() {
 
         viewModelRequisition.requisitionListLiveData.observe(viewLifecycleOwner) { result ->
             val elementos = listOf("1 a 1", "Multiple")
-            adaptador = ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,elementos)
+            adaptador = ArrayAdapter<String>(requireContext(),android.R.layout.simple_spinner_item,elementos)
             spinner.adapter = adaptador
         }
 
