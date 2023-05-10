@@ -143,7 +143,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Spinner
-            android:id="@+id/spinnerAlistamietno"
+            android:id="@+id/spinnerAlistamiento"
             android:layout_width="52dp"
             android:layout_height="26dp"
             tools:layout_editor_absoluteX="262dp"

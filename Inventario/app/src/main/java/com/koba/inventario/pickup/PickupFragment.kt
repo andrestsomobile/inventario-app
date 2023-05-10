@@ -20,6 +20,7 @@ import com.koba.inventario.camera.INVOCATION_SOURCE_VALUE
 import com.koba.inventario.database.AppDatabase
 import com.koba.inventario.database.DatabaseHandler
 import com.koba.inventario.database.PickupEntity
+import com.koba.inventario.databinding.ActivityMainBinding
 import com.koba.inventario.positioning.TrafficUiModel
 
 
@@ -44,6 +45,7 @@ class PickupFragment : Fragment() {
     private lateinit var progressBar: ProgressBar
     private lateinit var spinner: Spinner
     private lateinit var adaptador: ArrayAdapter<String>
+    private lateinit var mBinding: ActivityMainBinding
     //private var elementos : List<String> = listOf("1 a 1", "Multiple")
     private lateinit var barcodeSource: String
     private lateinit var user: String
@@ -61,6 +63,15 @@ class PickupFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        mBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(mBinding.root)
+
+        val elementos = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item)
+
+        elementos.addAll(Array.asList("1 a 1", "Multiple"))
+
+        mBinding.spinnerAlistamiento.adapter = elementos
+
         val view = inflater.inflate(R.layout.fragment_pickup, container, false)
         navController = findNavController()
         navController.currentBackStackEntry?.savedStateHandle?.getLiveData<String>(
@@ -93,8 +104,15 @@ class PickupFragment : Fragment() {
         amountProduct = view.findViewById(R.id.edit_text_amount)
         novelty = view.findViewById(R.id.edit_text_novelty)
         progressBar = view.findViewById(R.id.progressBar)
-        spinner = view.findViewById(R.id.spinnerAlistamietno)
+        spinner = view.findViewById(R.id.spinnerAlistamiento)
         requisitionNumberId = ""
+
+        /*val elementos = listOf("1 a 1", "Multiple")
+        val unica = elementos[0]
+        val multiple = elementos[1]*/
+
+
+
 
 
         barCodeProduct.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
@@ -224,11 +242,11 @@ class PickupFragment : Fragment() {
 
 
 
-        viewModelRequisition.requisitionListLiveData.observe(viewLifecycleOwner) { result ->
-            val elementos = listOf("1 a 1", "Multiple")
-            adaptador = ArrayAdapter<String>(requireContext(),android.R.layout.simple_spinner_item,elementos)
+        /*viewModelRequisition.requisitionListLiveData.observe(viewLifecycleOwner) { result ->
+
+            //adaptador = ArrayAdapter<String>(requireContext(),android.R.layout.simple_spinner_item,elementos)
             spinner.adapter = adaptador
-        }
+        }*/
 
         viewModelRequisition.requisitionListLiveData.observe(viewLifecycleOwner) { result ->
             if(isDataRequisitionEmpty) {
