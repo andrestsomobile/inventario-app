@@ -20,8 +20,8 @@ import com.koba.inventario.camera.INVOCATION_SOURCE_VALUE
 import com.koba.inventario.database.AppDatabase
 import com.koba.inventario.database.DatabaseHandler
 import com.koba.inventario.database.PickupEntity
-import com.koba.inventario.databinding.ActivityMainBinding
 import com.koba.inventario.positioning.TrafficUiModel
+import java.util.Arrays.asList
 
 
 const val INVOCATION_SOURCE_PICKUP_PRODUCT = "INVOCATION_SOURCE_PICKUP_PRODUCT"
@@ -45,7 +45,6 @@ class PickupFragment : Fragment() {
     private lateinit var progressBar: ProgressBar
     private lateinit var spinner: Spinner
     private lateinit var adaptador: ArrayAdapter<String>
-    private lateinit var mBinding: ActivityMainBinding
     //private var elementos : List<String> = listOf("1 a 1", "Multiple")
     private lateinit var barcodeSource: String
     private lateinit var user: String
@@ -56,21 +55,16 @@ class PickupFragment : Fragment() {
     private var saved: Boolean = true
     private var isDataRequisitionEmpty = true
     private var arrProductLocation : List<PickupObject> = ArrayList<PickupObject>()
+    private var seleccion: String = ""
+
     //private var databaseHandler: DatabaseHandler = DatabaseHandler()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        mBinding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(mBinding.root)
 
-        val elementos = ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item)
 
-        elementos.addAll(Array.asList("1 a 1", "Multiple"))
-
-        mBinding.spinnerAlistamiento.adapter = elementos
 
         val view = inflater.inflate(R.layout.fragment_pickup, container, false)
         navController = findNavController()
@@ -107,12 +101,23 @@ class PickupFragment : Fragment() {
         spinner = view.findViewById(R.id.spinnerAlistamiento)
         requisitionNumberId = ""
 
-        /*val elementos = listOf("1 a 1", "Multiple")
-        val unica = elementos[0]
-        val multiple = elementos[1]*/
+        val elementos = ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_dropdown_item)
+
+        elementos.addAll("1 a 1", "Multiple")
+
+        spinner.adapter = elementos
 
 
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                // You can define your actions as you want
+            }
+
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
+                seleccion = spinner.selectedItem as String
+            }
+        }
 
 
         barCodeProduct.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
@@ -131,25 +136,27 @@ class PickupFragment : Fragment() {
                 activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
 
                 //Si es 1 vs 1
-                /*var exists = false;
-                for(p in arrProductLocation) {
-                    if(p.barcodeLocation == barCodeLocation.toString() && p.barcodeProduct == barCodeProduct.toString()) {
-                        p.amount = p.amount +1;
-                        exists = true;
-                        break;
+                if(seleccion.equals("1 a 1")) {
+                    var exists = false;
+                    for(p in arrProductLocation) {
+                        if(p.barcodeLocation == barCodeLocation.text.toString() && p.barcodeProduct == barCodeProduct.text.toString()) {
+                            p.amount = p.amount +1;
+                            exists = true;
+                            break;
+                        }
                     }
+
+                    if(!exists) {
+                        val p = PickupObject(barCodeProduct.text.toString(), barCodeLocation.text.toString(), 1);
+                        arrProductLocation = append(arrProductLocation, p);
+                    }
+                    barCodeLocation.text.clear()
+                    barCodeProduct.text.clear()
+                    barCodeProduct.requestFocus()
+                } else {
+                    //SINO
+                    amountProduct.requestFocus()
                 }
-
-                if(!exists) {
-                    val p = PickupObject(barCodeProduct.toString(), barCodeLocation.toString(), 1);
-                    arrProductLocation = append(arrProductLocation, p);
-                }
-                barCodeProduct.requestFocus()
-
-                //SINO
-                amountProduct.requestFocus()
-                */
-
             }
             false
         })
@@ -179,14 +186,19 @@ class PickupFragment : Fragment() {
                     }
 
                     //Si es 1 vs 1 no es necesaria esta validacion
-                    if (TextUtils.isEmpty(amountProduct.text.toString())) {
-                        Toast.makeText(requireContext(), getString(R.string.required_field_amount), Toast.LENGTH_SHORT)
-                            .show()
-                        required = false
-                    }
-                    if(required){
+                    if(!seleccion.equals("1 a 1")) {
+                        if (TextUtils.isEmpty(amountProduct.text.toString())) {
+                            Toast.makeText(requireContext(), getString(R.string.required_field_amount), Toast.LENGTH_SHORT)
+                                .show()
+                            required = false
+                        }
+                        if(required){
+                            save(barCodeProduct.text.toString(),barCodeLocation.text.toString(),args.username,amountProduct.text.toString(),novelty.text.toString())
+                        }
+                    } else {
                         save(barCodeProduct.text.toString(),barCodeLocation.text.toString(),args.username,amountProduct.text.toString(),novelty.text.toString())
                     }
+
                     progressBar.visibility = View.INVISIBLE
                 })
                 // negative button text and action
@@ -239,14 +251,6 @@ class PickupFragment : Fragment() {
                 ).show()
             }
         }
-
-
-
-        /*viewModelRequisition.requisitionListLiveData.observe(viewLifecycleOwner) { result ->
-
-            //adaptador = ArrayAdapter<String>(requireContext(),android.R.layout.simple_spinner_item,elementos)
-            spinner.adapter = adaptador
-        }*/
 
         viewModelRequisition.requisitionListLiveData.observe(viewLifecycleOwner) { result ->
             if(isDataRequisitionEmpty) {
@@ -345,15 +349,35 @@ class PickupFragment : Fragment() {
     private fun validateDataRequisition(barcodeProduct: String,barcodeLocation: String,user: String, amount :String, novelty :String){
         var validate = true
         if(barCodeProduct.text.toString() != "" && barCodeLocation.text.toString() != ""){
-            for (t in dataRequisitionObjectList) {
-                var position = t.refPedido?.refpposicion
-                var amountPosition = t.refPedido?.refpcantidad?.toBigDecimal()?.toInt().toString()
-                if(t.refPedido?.refpproducto == barCodeProduct.text.toString() &&
-                    position == barCodeLocation.text.toString() &&
-                    amount == amountProduct.text.toString()){
-                    validate = false
+            if(seleccion.equals("1 a 1")) {
+                for (t in dataRequisitionObjectList) {
+                    var position = t.refPedido?.refpposicion
+                    var amountPosition = t.refPedido?.refpcantidad?.toBigDecimal()?.toInt()
+
+                    for(p in arrProductLocation) {
+                        var inputProduct = p.barcodeProduct.toString()
+                        var inputLocation = p.barcodeLocation.toString()
+                        if(t.refPedido?.refpproducto == inputProduct &&
+                            position == inputLocation &&
+                            amountPosition == p.amount){
+                            validate = false
+                        }
+                    }
+
+                }
+
+            } else {
+                for (t in dataRequisitionObjectList) {
+                    var position = t.refPedido?.refpposicion
+                    var amountPosition = t.refPedido?.refpcantidad?.toBigDecimal()?.toInt().toString()
+                    if(t.refPedido?.refpproducto == barCodeProduct.text.toString() &&
+                        position == barCodeLocation.text.toString() &&
+                        amount == amountProduct.text.toString()){
+                        validate = false
+                    }
                 }
             }
+
             if(validate){
                 Toast.makeText(
                     requireContext(),
@@ -362,13 +386,15 @@ class PickupFragment : Fragment() {
                 ).show()
             } else {
                 saved = false
-                //Si es multiple
-                viewModel.createPickupService(requisitionNumberId,args.requisition,novelty,barcodeProduct,barcodeLocation, user)
-
-                //Si es 1 vs 1
-                /*for(p in arrProductLocation) {
-                    viewModel.createPickupService(requisitionNumberId,args.requisition,novelty,p.barcodeProduct,p.barcodeLocation, user)
-                }*/
+                if(seleccion.equals("1 a 1")) {
+                    //Si es 1 vs 1
+                    for(p in arrProductLocation) {
+                        viewModel.createPickupService(requisitionNumberId,args.requisition,novelty,p.barcodeProduct,p.barcodeLocation, user)
+                    }
+                } else {
+                    //Si es multiple
+                    viewModel.createPickupService(requisitionNumberId,args.requisition,novelty,barcodeProduct,barcodeLocation, user)
+                }
             }
         }
     }

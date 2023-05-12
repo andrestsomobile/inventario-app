@@ -83,4 +83,5 @@
     <string name="required_number_amount">La cantidad debe ser numérica</string>
     <string name="continue_position">desea continuar con la misma posición?</string>
     <string name="text_button_backup">Backup</string>
+    <string name="text_view_tipo_alistamiento">Tipo Alistamiento</string>
 </resources>
