@@ -122,41 +122,48 @@ class PickupFragment : Fragment() {
 
         barCodeProduct.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
-                barCodeProduct.setText(barCodeProduct.text.substring(0, barCodeProduct.text.length-1))
-                barCodeLocation.requestFocus()
-                activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+                if(barCodeProduct.text != null && barCodeProduct.text.isNotEmpty()) {
+                    barCodeProduct.setText(barCodeProduct.text.substring(0, barCodeProduct.text.length-1))
+                    barCodeLocation.requestFocus()
+                    activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+                }
+
             }
             false
         })
 
         barCodeLocation.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
-                barCodeLocation.setText(barCodeLocation.text.substring(0, barCodeLocation.text.length-1))
-                amountProduct.requestFocus()
-                activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
-
-                //Si es 1 vs 1
-                if(seleccion.equals("1 a 1")) {
-                    var exists = false;
-                    for(p in arrProductLocation) {
-                        if(p.barcodeLocation == barCodeLocation.text.toString() && p.barcodeProduct == barCodeProduct.text.toString()) {
-                            p.amount = p.amount +1;
-                            exists = true;
-                            break;
-                        }
-                    }
-
-                    if(!exists) {
-                        val p = PickupObject(barCodeProduct.text.toString(), barCodeLocation.text.toString(), 1);
-                        arrProductLocation = append(arrProductLocation, p);
-                    }
-                    barCodeLocation.text.clear()
-                    barCodeProduct.text.clear()
-                    barCodeProduct.requestFocus()
-                } else {
-                    //SINO
+                if(barCodeLocation.text != null && barCodeLocation.text.isNotEmpty()) {
+                    barCodeLocation.setText(barCodeLocation.text.substring(0, barCodeLocation.text.length-1))
                     amountProduct.requestFocus()
+                    activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+
+                    //Si es 1 vs 1
+                    if(seleccion.equals("1 a 1") && barCodeLocation.text != null && barCodeProduct.text != null && barCodeProduct.text.isNotEmpty()) {
+                        var exists = false;
+                        for(p in arrProductLocation) {
+                            if(p.barcodeLocation == barCodeLocation.text.toString() && p.barcodeProduct == barCodeProduct.text.toString()) {
+                                p.amount = p.amount +1;
+                                exists = true;
+                                break;
+                            }
+                        }
+
+                        if(!exists) {
+                            val p = PickupObject(barCodeProduct.text.toString(), barCodeLocation.text.toString(), 1);
+                            arrProductLocation = append(arrProductLocation, p);
+                        }
+                        barCodeLocation.text.clear()
+                        barCodeProduct.text.clear()
+                        barCodeProduct.requestFocus()
+                        barCodeProduct.requestFocus()
+                    } else {
+                        //SINO
+                        amountProduct.requestFocus()
+                    }
                 }
+
             }
             false
         })
