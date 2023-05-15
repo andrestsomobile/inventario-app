@@ -37,6 +37,7 @@ class PickupFragment : Fragment() {
     private lateinit var scanProductButton : Button
     private lateinit var scanLocationButton : Button
     private lateinit var removeButton : Button
+    private lateinit var cleanButton : Button
     private lateinit var barCodeProduct : EditText
     private lateinit var barCodeLocation : EditText
     private lateinit var amountProduct : EditText
@@ -93,6 +94,7 @@ class PickupFragment : Fragment() {
         scanProductButton = view.findViewById(R.id.button_scan_product)
         scanLocationButton = view.findViewById(R.id.button_scan_location)
         removeButton = view.findViewById(R.id.button_save_remove)
+        cleanButton = view.findViewById(R.id.button_clean_product)
         barCodeProduct = view.findViewById(R.id.barcode_product)
         barCodeLocation = view.findViewById(R.id.barcode_location)
         amountProduct = view.findViewById(R.id.edit_text_amount)
@@ -154,8 +156,7 @@ class PickupFragment : Fragment() {
                             val p = PickupObject(barCodeProduct.text.toString(), barCodeLocation.text.toString(), 1);
                             arrProductLocation = append(arrProductLocation, p);
                         }
-                        barCodeLocation.text.clear()
-                        barCodeProduct.text.clear()
+
                         barCodeProduct.requestFocus()
                         barCodeProduct.requestFocus()
                     } else {
@@ -176,6 +177,12 @@ class PickupFragment : Fragment() {
         viewModel.findByUser(args.username)
         viewModelRequisition.findRequisitionList(args.requisition,user)
         viewModelRequisition.findRequisitionNumber(args.requisition,user)
+
+        cleanButton.setOnClickListener {
+            barCodeProduct.text.clear()
+            barCodeLocation.text.clear()
+            amountProduct.text.clear()
+        }
 
         removeButton.setOnClickListener {
             val dialogBuilder = AlertDialog.Builder(this.context)
