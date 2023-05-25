@@ -97,35 +97,6 @@ class ValidateViewModel: ViewModel() {
             var validateMessage = ""
             var relocationResponseCall = ApiClient.validateService.finishValidate(barcodeProduct,barcodeLocation, user, "MOVIL",amount, id, table)
 
-            /*relocationResponseCall?.enqueue(object : retrofit2.Callback<ServiceResponse?> {
-                override fun onResponse(
-                    call: Call<ServiceResponse?>,
-                    response: Response<ServiceResponse?>
-                ) {
-                    if (response.isSuccessful and response.body()?.status.equals("SUCESS")) {
-                        validateMessage = response.body()?.message.toString()
-                        _validateServiceCreateResultLiveData.value = true
-                        _validateResultLiveData.value = validateMessage
-                        update(barcodeProduct,barcodeLocation,user,amount,id)
-                    } else {
-                        validateMessage =  response.body()?.message.toString()
-                        _validateServiceCreateResultLiveData.value = false
-                        _validateResultLiveData.value = validateMessage
-                        update(barcodeProduct,barcodeLocation,user,amount,id)
-                    }
-                }
-
-                override fun onFailure(call: Call<ServiceResponse?>, t: Throwable) {
-                    val message = t.message
-                    if(sync != "1") {
-                        create(barcodeProduct,barcodeLocation,user, amount, id);
-                    }
-
-                    validateMessage = "Fallo en el servicio, intente de nuevamente"
-                    _validateResultLiveData.value = validateMessage
-                    _validateServiceCreateResultLiveData.value = false
-                }
-            })*/
             try
             {
                 var response = relocationResponseCall.execute();
@@ -174,14 +145,10 @@ class ValidateViewModel: ViewModel() {
 
     fun create(barcodeProduct: String,barcodeLocation: String,user: String, amount: String, id: String) {
         viewModelScope.launch {
-            //val productList = database?.validateDao().findByBarcodeProduct(barcodeProduct,barcodeLocation,user,amount,id)
-
-            //if(productList == null || productList.isEmpty()) {
                 database.validateDao().create(ValidateEntity(
                     0,barcodeProduct,barcodeLocation, amount,user,id,1
                 ))
                 _createdResultLiveData.value = true
-            //}
         }
     }
 

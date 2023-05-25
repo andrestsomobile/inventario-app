@@ -18,6 +18,7 @@ import com.koba.inventario.R
 import com.koba.inventario.camera.BARCODE_CAPTURED_VALUE
 import com.koba.inventario.camera.INVOCATION_SOURCE_VALUE
 import com.koba.inventario.database.AppDatabase
+import com.koba.inventario.pickup.PickupObject
 
 
 const val INVOCATION_SOURCE_VALIDATE_PRODUCT = "INVOCATION_SOURCE_VALIDATE_PRODUCT"
@@ -31,27 +32,27 @@ class ValidateFragment : Fragment() {
     private lateinit var scanProductButton : Button
     private lateinit var scanLocationButton : Button
     private lateinit var saveButton : Button
-    //private lateinit var backupButton : Button
-    //private lateinit var finishButton : Button
     private lateinit var barCodeProduct : EditText
     private lateinit var barCodeLocation : EditText
     private lateinit var navController: NavController
     private lateinit var progressBar: ProgressBar
     private lateinit var barcodeSource: String
     private lateinit var amountProduct : EditText
-    //private lateinit var count : EditText
-    private lateinit var spinnerInventory: Spinner
+    private lateinit var countText : EditText
     private lateinit var user: String
     private var dataValidateList : ArrayList<ValidateUiModel> = ArrayList()
     private var saved: Boolean = false
     private lateinit var reference: String
     private lateinit var location: String
     private lateinit var amount: String
-    private var inventoryIdSelected: InventoryUiModel = InventoryUiModel(null)
     private lateinit var adapter: ArrayAdapter<InventoryUiModel>
     private var countSave: Int = 0;
     private var countNoSave: Int = 0;
     private var idBdLocal: String = "";
+    private var arrProductLocation : List<PickupObject> = ArrayList<PickupObject>()
+
+    private lateinit var spinnerTipo: Spinner
+    private var seleccionTipo: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,7 +75,10 @@ class ValidateFragment : Fragment() {
             INVOCATION_SOURCE_VALUE
         )?.observe(
             viewLifecycleOwner) { result ->
-            if(result.equals(INVOCATION_SOURCE_VALIDATE_PRODUCT)) barCodeProduct.setText(barcodeSource) else barCodeLocation.setText(barcodeSource)
+            if(result.equals(INVOCATION_SOURCE_VALIDATE_PRODUCT)) {
+                barCodeProduct.setText(barcodeSource)
+                onBlurProduct()
+            } else barCodeLocation.setText(barcodeSource)
         }
 
         setHasOptionsMenu(true)
@@ -83,20 +87,56 @@ class ValidateFragment : Fragment() {
         return view
     }
 
+    private fun onBlurProduct() {
+        if(barCodeLocation.text != null && barCodeLocation.text.isNotEmpty() && barCodeProduct.text != null && barCodeProduct.text.isNotEmpty()) {
+            activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+
+            //Si es 1 vs 1
+            if(seleccionTipo.equals("1 a 1")) {
+                var exists = false;
+
+                var amountTemp = 1
+                for(p in arrProductLocation) {
+                    if(p.barcodeLocation == barCodeLocation.text.toString() && p.barcodeProduct == barCodeProduct.text.toString()) {
+                        p.amount = p.amount +1;
+                        exists = true;
+                        amountTemp = p.amount;
+                        break;
+                    }
+                }
+
+                if(!exists) {
+                    val p = PickupObject(barCodeProduct.text.toString(), barCodeLocation.text.toString(), 1);
+                    arrProductLocation = append(arrProductLocation, p);
+                }
+                amountProduct.setText(amountTemp.toString());
+
+                barCodeProduct.text.clear()
+                barCodeProduct.requestFocus()
+            } else {
+                amountProduct.requestFocus()
+            }
+        }
+    }
+
+    fun append(arr: List<PickupObject>, element: PickupObject): List<PickupObject> {
+        val list: MutableList<PickupObject> = arr.toMutableList()
+        list.add(element)
+        return list
+    }
+
     private fun initViews(view: View) {
         username = view.findViewById(R.id.username)
         syncButton = view.findViewById(R.id.syncButton)
         scanProductButton = view.findViewById(R.id.button_scan_product)
         scanLocationButton = view.findViewById(R.id.button_scan_location)
         saveButton = view.findViewById(R.id.button_save_validate)
-        //backupButton = view.findViewById(R.id.button_backup_validate)
-        //finishButton = view.findViewById(R.id.button_finish_validate)
         barCodeProduct = view.findViewById(R.id.barcode_product)
         barCodeLocation = view.findViewById(R.id.barcode_location)
         progressBar = view.findViewById(R.id.progressBar)
         amountProduct = view.findViewById(R.id.edit_text_amount)
-        spinnerInventory = view.findViewById(R.id.spinner_inventory)
-        //count = view.findViewById(R.id.barcode_count)
+        countText = view.findViewById(R.id.editConteo)
+        spinnerTipo = view.findViewById(R.id.spinnerAlistamiento)
 
         barCodeLocation.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
@@ -110,35 +150,29 @@ class ValidateFragment : Fragment() {
         barCodeProduct.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
                 barCodeProduct.setText(barCodeProduct.text.substring(0, barCodeProduct.text.length-1))
-                amountProduct.requestFocus()
+                onBlurProduct()
                 activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
             }
             false
         })
 
-        spinnerInventory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+        val elementos = ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_dropdown_item)
+
+        elementos.addAll("1 a 1", "Multiple")
+
+        spinnerTipo.adapter = elementos
+
+
+        spinnerTipo.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
                 // You can define your actions as you want
             }
 
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
-                inventoryIdSelected = spinnerInventory.selectedItem as InventoryUiModel
+                seleccionTipo = spinnerTipo.selectedItem as String
             }
         }
-
-        viewModel.inventoryLiveData.observe(viewLifecycleOwner) { result ->
-            adapter =
-                ArrayAdapter<InventoryUiModel>(requireContext(), android.R.layout.simple_spinner_item, result)
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            adapter.notifyDataSetChanged()
-            spinnerInventory.adapter = adapter
-            if(inventoryIdSelected.id != null){
-                spinnerInventory.setSelection(adapter.getPosition(inventoryIdSelected))
-            }
-        }
-
-        viewModel.findAllInventory();
 
         syncButton.isEnabled = false
         val args : ValidateFragmentArgs by navArgs()
@@ -148,74 +182,9 @@ class ValidateFragment : Fragment() {
 
         saveButton.setOnClickListener {
             progressBar.visibility = View.VISIBLE
-            var required = true
-            if (TextUtils.isEmpty(barCodeProduct.text.toString())){
-                Toast.makeText(requireContext(), getString(R.string.required_field_product), Toast.LENGTH_SHORT).show()
-                required = false
-            }
-            if (TextUtils.isEmpty(barCodeLocation.text.toString())){
-                Toast.makeText(requireContext(), getString(R.string.required_field_location), Toast.LENGTH_SHORT).show()
-                required = false
-            }
-            if (TextUtils.isEmpty(amountProduct.text.toString())) {
-                Toast.makeText(requireContext(), getString(R.string.required_field_amount), Toast.LENGTH_SHORT)
-                    .show()
-                required = false
-            }
-            if(required){
-                var id = ""
-
-                if(inventoryIdSelected != null && inventoryIdSelected.id != null) {
-                    id = inventoryIdSelected.id.toString();
-                }
-                save(barCodeProduct.text.toString(), barCodeLocation.text.toString(),user,amountProduct.text.toString(), id)
-
-                val dialogBuilder = AlertDialog.Builder(this.context)
-                dialogBuilder.setMessage(getString(R.string.continue_position))
-                    // if the dialog is cancelable
-                    .setCancelable(false)
-                    // positive button text and action
-                    .setPositiveButton(getString(R.string.text_confirm_yes), DialogInterface.OnClickListener {
-                            _dialog, _id -> barCodeProduct.requestFocus();
-
-                            _dialog.cancel();
-
-                    })
-                    // negative button text and action
-                    .setNegativeButton(getString(R.string.text_confirm_no), DialogInterface.OnClickListener {
-
-                            _dialog, _id ->
-                        barCodeLocation.requestFocus(); barCodeLocation.text.clear();
-
-                        _dialog.cancel()
-
-
-                    })
-                val alert = dialogBuilder.create()
-                // set title for alert dialog box
-                alert.setTitle(getString(R.string.text_tittle_confirm))
-                // show alert dialog
-                alert.show()
-            }
-            //finish()
+            saveValidation();
             progressBar.visibility = View.INVISIBLE
         }
-
-        /*finishButton.setOnClickListener {
-            progressBar.visibility = View.VISIBLE
-            finish()
-            progressBar.visibility = View.INVISIBLE
-        }
-
-        backupButton.setOnClickListener {
-            var id = ""
-
-            if(inventoryIdSelected != null && inventoryIdSelected.id != null) {
-                id = inventoryIdSelected.id.toString();
-            }
-
-            viewModel.findByUserBackup(user, "1")
-        }*/
 
         scanProductButton.setOnClickListener {
             navController.navigate(ValidateFragmentDirections.actionValidateFragmentToCameraFragment(INVOCATION_SOURCE_VALIDATE_PRODUCT))
@@ -241,7 +210,7 @@ class ValidateFragment : Fragment() {
                     ).show()
                     syncButton.isEnabled = true
                 } else {
-                    Toast.makeText(requireContext(), getString(R.string.sync_complete) + "," + viewModel.validateLiveData.value, Toast.LENGTH_SHORT)
+                    Toast.makeText(requireContext(), getString(R.string.sync_complete) + "," + viewModel.validateLiveData.value, Toast.LENGTH_LONG)
                         .show()
 
                     viewModel.clearData()
@@ -252,13 +221,71 @@ class ValidateFragment : Fragment() {
 
     }
 
+    private fun saveValidation(){
+        var required = true
+
+        if(!seleccionTipo.equals("1 a 1")) {
+            if (TextUtils.isEmpty(barCodeProduct.text.toString())){
+                Toast.makeText(requireContext(), getString(R.string.required_field_product), Toast.LENGTH_LONG).show()
+                required = false
+            }
+            if (TextUtils.isEmpty(barCodeLocation.text.toString())){
+                Toast.makeText(requireContext(), getString(R.string.required_field_location), Toast.LENGTH_LONG).show()
+                required = false
+            }
+            if (TextUtils.isEmpty(amountProduct.text.toString())) {
+                Toast.makeText(requireContext(), getString(R.string.required_field_amount), Toast.LENGTH_LONG)
+                    .show()
+                required = false
+            }
+            if (TextUtils.isEmpty(countText.text.toString())) {
+                Toast.makeText(requireContext(), getString(R.string.required_field_conteo), Toast.LENGTH_LONG)
+                    .show()
+                required = false
+            }
+        }
+
+        if(required){
+
+            if(!seleccionTipo.equals("1 a 1")) {
+                save(barCodeProduct.text.toString(), barCodeLocation.text.toString(),user,amountProduct.text.toString(), countText.text.toString())
+                val dialogBuilder = AlertDialog.Builder(this.context)
+                dialogBuilder.setMessage(getString(R.string.continue_position))
+                    // if the dialog is cancelable
+                    .setCancelable(false)
+                    // positive button text and action
+                    .setPositiveButton(getString(R.string.text_confirm_yes), DialogInterface.OnClickListener {
+                            _dialog, _id -> barCodeProduct.requestFocus();
+
+                        _dialog.cancel();
+
+                    })
+                    // negative button text and action
+                    .setNegativeButton(getString(R.string.text_confirm_no), DialogInterface.OnClickListener {
+
+                            _dialog, _id ->
+                        barCodeLocation.requestFocus(); barCodeLocation.text.clear();
+
+                        _dialog.cancel()
+
+
+                    })
+                val alert = dialogBuilder.create()
+                // set title for alert dialog box
+                alert.setTitle(getString(R.string.text_tittle_confirm))
+                // show alert dialog
+                alert.show()
+            } else {
+                for(p in arrProductLocation) {
+                    save(p.barcodeProduct, p.barcodeLocation,user,p.amount.toString(), countText.text.toString())
+                }
+
+            }
+        }
+    }
+
     private fun initLiveData() {
         viewModel.setDataBase(AppDatabase.getDatabase(requireContext().applicationContext))
-        /*viewModel.createdLiveData.observe(viewLifecycleOwner) { result ->
-            if (result) {
-                Toast.makeText(requireContext(), getString(R.string.save_item_ok), Toast.LENGTH_SHORT).show()
-            }
-        }*/
         viewModel.syncLiveData.observe(viewLifecycleOwner) { result ->
             if (result) {
                 syncButton.isEnabled = true
@@ -277,7 +304,6 @@ class ValidateFragment : Fragment() {
                     Toast.makeText(requireContext(), "Registro guardado", Toast.LENGTH_LONG).show()
                 }
 
-                spinnerInventory.setSelection(0)
                 barCodeProduct.text.clear()
                 amountProduct.text.clear()
                 syncButton.isEnabled = true
@@ -299,54 +325,19 @@ class ValidateFragment : Fragment() {
                 }
                 viewModel.clearModel()
             }
-
-            //count.setText("guardados " + countSave + " sin guardar " + countNoSave + " id local " + idBdLocal);
         }
 
         viewModel.findAllInventory()
     }
 
     private fun save(barcodeProduct: String,barcodeLocation: String,user: String, amount :String, id : String) {
-        //this.dataValidateList.add(ValidateUiModel(barcodeProduct, barcodeLocation, amount, user, id))
         saved = false
         viewModel.createValidationService(barcodeProduct,  barcodeLocation, user, amount, id, "inventario", "0")
-        //Toast.makeText(requireContext(), getString(R.string.save_item_ok), Toast.LENGTH_SHORT).show()
         barCodeProduct.text.clear()
-        //barCodeLocation.text.clear()
         amountProduct.text.clear()
-        spinnerInventory.setSelection(0)
+        barCodeProduct.requestFocus()
         syncButton.isEnabled = true
     }
-
-    /*private fun finish() {
-        var failed = false
-        reference = ""
-        location = ""
-        amount = ""
-        var id = ""
-        for(data in this.dataValidateList) {
-            reference += data.barCodeProduct + ",";
-            location += data.barCodeLocation + ",";
-            amount += data.amountProduct + ","
-            id += data.id + ","
-        }
-
-        if(reference.length > 0) {
-            reference = reference.substring(0, reference.length-1)
-            location = location.substring(0, location.length-1)
-            amount = amount.substring(0, amount.length-1)
-            id = id.substring(0, id.length-1)
-        } else {
-            failed = true
-            Toast.makeText(requireContext(), getString(R.string.required_save_product), Toast.LENGTH_SHORT).show()
-        }
-
-        if(!failed) {
-            // se debe hacer la conexion a los servicios y por ultimo guardar al room
-            saved = false
-            viewModel.createValidationService(reference,  location, user, amount, id, "inventario", "0")
-        }
-    }*/
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
@@ -361,6 +352,5 @@ class ValidateFragment : Fragment() {
             }
             else -> super.onOptionsItemSelected(item)
         }
-        //return NavigationUI.onNavDestinationSelected(item!!, requireView().findNavController()) || super.onOptionsItemSelected(item)
     }
 }

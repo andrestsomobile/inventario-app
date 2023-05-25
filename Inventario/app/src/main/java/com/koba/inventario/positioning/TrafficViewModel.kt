@@ -38,6 +38,11 @@ class TrafficViewModel: ViewModel() {
     fun findByUser(user: String) {
         viewModelScope.launch {
             val trafficSync = database.trafficDao().findTrafficByIndSync(1,user)
+
+            trafficSync.forEach {
+                createTraffic(it.trafficCode)
+            }
+
             _syncResultLiveData.value = trafficSync.isNotEmpty()
         }
     }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,6 +11,31 @@
         android:layout_height="match_parent">
 
         <TextView
+            android:id="@+id/textTipoAlistamiento"
+            android:layout_width="103dp"
+            android:layout_height="39dp"
+            android:layout_marginTop="62dp"
+            android:layout_marginEnd="10dp"
+            android:text="@string/text_view_tipo_alistamiento"
+            android:textAlignment="textStart"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            app:layout_constraintHorizontal_bias="0.029"
+            app:layout_constraintStart_toStartOf="@+id/textViewPosition"
+            app:layout_constraintTop_toBottomOf="@+id/textViewPosition"
+            app:layout_constraintVertical_bias="0.81" />
+
+        <Spinner
+            android:id="@+id/spinnerAlistamiento"
+            android:layout_width="136dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="64dp"
+            android:scrollbarThumbVertical="@drawable/scrollbar_style"
+            app:layout_constraintStart_toEndOf="@+id/textTipoAlistamiento"
+            app:layout_constraintTop_toBottomOf="@+id/textViewPosition"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
             android:id="@+id/textViewTraffic"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -18,8 +43,8 @@
             android:textAlignment="textStart"
             android:textSize="18dp"
             android:layout_marginTop="20dp"
-            app:layout_constraintStart_toStartOf="@+id/textViewPosition"
-            app:layout_constraintTop_toBottomOf="@+id/textViewPosition" />
+            app:layout_constraintStart_toStartOf="@+id/textTipoAlistamiento"
+            app:layout_constraintTop_toBottomOf="@+id/textTipoAlistamiento" />
 
         <Spinner
             android:id="@+id/spinner_traffic"
@@ -28,8 +53,9 @@
             android:textAlignment="textStart"
             android:layout_marginTop="22dp"
             android:layout_marginStart="20dp"
+            android:scrollbarThumbVertical="@drawable/scrollbar_style"
             app:layout_constraintStart_toEndOf="@+id/textViewTraffic"
-            app:layout_constraintTop_toBottomOf="@+id/textViewPosition"
+            app:layout_constraintTop_toBottomOf="@+id/textTipoAlistamiento"
             />
 
         <Button
@@ -113,8 +139,8 @@
             android:enabled="true"
             android:layout_marginTop="20dp"
             android:hint="@string/hint_product"
-            app:layout_constraintStart_toStartOf="@+id/textViewTraffic"
-            app:layout_constraintTop_toBottomOf="@+id/textViewTraffic"
+            app:layout_constraintStart_toStartOf="@+id/barcode_location"
+            app:layout_constraintTop_toBottomOf="@+id/barcode_location"
             app:layout_constraintVertical_chainStyle="packed" />
 
         <EditText
@@ -124,8 +150,8 @@
             android:enabled="true"
             android:layout_marginTop="20dp"
             android:hint="@string/hint_location"
-            app:layout_constraintStart_toStartOf="@+id/barcode_product"
-            app:layout_constraintTop_toBottomOf="@+id/barcode_product"
+            app:layout_constraintStart_toStartOf="@+id/textViewTraffic"
+            app:layout_constraintTop_toBottomOf="@+id/textViewTraffic"
             app:layout_constraintVertical_chainStyle="packed" />
 
         <EditText
@@ -135,8 +161,8 @@
             android:layout_marginTop="20dp"
             android:inputType="number"
             android:hint="@string/hint_amount"
-            app:layout_constraintStart_toStartOf="@+id/barcode_location"
-            app:layout_constraintTop_toBottomOf="@+id/barcode_location"
+            app:layout_constraintStart_toStartOf="@+id/barcode_product"
+            app:layout_constraintTop_toBottomOf="@+id/barcode_product"
             app:layout_constraintVertical_chainStyle="packed" />
 
         <ProgressBar
@@ -154,4 +180,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</FrameLayout>
+</ScrollView>

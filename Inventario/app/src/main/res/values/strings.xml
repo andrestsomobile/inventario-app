@@ -16,6 +16,8 @@
     <string name="requisition_field_invalid">El pedido ya se encuentra finalizado</string>
     <string name="requisition_number_field_failed">No se encontro datos de registro pedido</string>
     <string name="requisition_list_field_failed">No se ecuentra el producto, ubicacion, cantidad para el pedido</string>
+    <string name="requisition_product_list_completed">Pedido completado para el producto ingresado</string>
+    <string name="requisition_list_completed">Pedido completado</string>
     <string name="requisition_create_failed">Fallo al crear el registro del pedido</string>
     <string name="sync_complete">Datos Sincronizados</string>
     <string name="sync_fail">Error de sincronizacion, Intente de nuevo</string>
@@ -83,5 +85,8 @@
     <string name="required_number_amount">La cantidad debe ser numérica</string>
     <string name="continue_position">desea continuar con la misma posición?</string>
     <string name="text_button_backup">Backup</string>
-    <string name="text_view_tipo_alistamiento">Tipo Alistamiento</string>
+    <string name="text_view_tipo_alistamiento">Tipo</string>
+    <string name="text_view_conteo">Conteo</string>
+    <string name="required_field_conteo">Ingrese Conteo</string>
+
 </resources>

@@ -103,14 +103,12 @@ class RequisitionViewModel: ViewModel() {
                         _requisitionNumberResultLiveData.value = requisitionNumberObject
                         _requisitionNumberLiveData.value = false
                     } else {
-                        //databaseHandler.add(RequisitionViewModel::class.java.simpleName, "ERROR", "Error findRequisitionNumber " + response.body().toString())
                         _requisitionNumberResultLiveData.value = ""
                         _requisitionNumberLiveData.value = true
                     }
                 }
 
                 override fun onFailure(call: Call<RequisitionNumberResponse?>, t: Throwable) {
-                    //databaseHandler.add(RequisitionViewModel::class.java.simpleName, "Failure", "Error findRequisitionNumber " + t.stackTraceToString())
                     _requisitionNumberLiveData.value = true
                 }
             })

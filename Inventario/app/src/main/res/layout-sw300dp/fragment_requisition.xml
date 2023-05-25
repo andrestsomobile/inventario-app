@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -58,42 +58,41 @@
             android:id="@+id/requisitionSearchView"
             android:layout_width="0dp"
             android:layout_height="30dp"
+            android:layout_marginTop="52dp"
             android:includeFontPadding="false"
             android:padding="2dp"
             android:textSize="15sp"
-            android:layout_marginTop="10dp"
             app:iconifiedByDefault="false"
             app:layout_constraintEnd_toEndOf="@+id/buttonAdd"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/requisitionCode"
             app:layout_constraintTop_toBottomOf="@+id/requisitionCode"
-            app:layout_constraintVertical_bias="0.0"
             app:queryHint="@string/hint_query" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/requisitionRecyclerView"
             android:layout_width="match_parent"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="260dp"
-            android:layout_marginBottom="200dp"
             android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="100dp"
             android:divider="@color/material_blue_grey_800"
             android:dividerHeight="1dp"
             android:footerDividersEnabled="false"
+            android:scrollbars="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintStart_toStartOf="@+id/requisitionCode"
-            app:layout_constraintTop_toBottomOf="@+id/requisitionCode"/>
+            app:layout_constraintTop_toBottomOf="@+id/requisitionCode" />
 
         <Button
             android:id="@+id/buttonClean"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="@string/text_button_clean"
-            android:layout_marginTop="200dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.895"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/requisitionRecyclerView" />
+            app:layout_constraintTop_toBottomOf="@+id/buttonAdd" />
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -110,4 +109,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</FrameLayout>
+</ScrollView>

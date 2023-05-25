@@ -14,6 +14,7 @@ import com.koba.inventario.R
 import com.koba.inventario.database.AppDatabase
 import com.koba.inventario.pickup.PickupViewModel
 import com.koba.inventario.positioning.PositionViewModel
+import com.koba.inventario.positioning.TrafficViewModel
 import com.koba.inventario.report.ValidateViewModel
 
 class SynchronizationFragment : Fragment() {
@@ -22,6 +23,7 @@ class SynchronizationFragment : Fragment() {
     private val viewModelValidation: ValidateViewModel by activityViewModels()
     private val pickupViewModel: PickupViewModel by activityViewModels()
     private val positionViewModel: PositionViewModel by activityViewModels()
+    private val viewModelTraffic: TrafficViewModel by activityViewModels()
     private lateinit var username : TextView
     private lateinit var processSyncRecyclerView : RecyclerView
     private lateinit var navController: NavController
@@ -78,6 +80,7 @@ class SynchronizationFragment : Fragment() {
         viewModel.syncPositionLiveData.observe(viewLifecycleOwner) { result ->
             if(result != null && result.isNotEmpty()) {
                 positionViewModel.findByUser(user)
+                viewModelTraffic.findByUser(user)
             }
         }
 

@@ -168,6 +168,7 @@ class RequisitionFragment : Fragment() {
                 for(t in dataRequisitionList){
                     if(t.requisition == result[0].requisition){
                         validate = false
+                        t.status = result[0].status
                     }
                 }
                 if(validate){
@@ -188,11 +189,27 @@ class RequisitionFragment : Fragment() {
                                 Toast.makeText(
                                     requireContext(),
                                     getString(R.string.requisition_field_invalid),
-                                    Toast.LENGTH_SHORT
+                                    Toast.LENGTH_LONG
                                 ).show()
                             }
                         }
                     })
+                } else {
+                    val requisition = result[0].requisition
+                    requisitionCode.text.clear()
+                    if(!result[0].status){
+                        navController.navigate(
+                            RequisitionFragmentDirections.actionRequisitionFragmentToPickupFragment(
+                                args.username, args.login, requisition.toString()
+                            )
+                        )
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.requisition_field_invalid),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             }
             adapter.setData(dataRequisitionList)

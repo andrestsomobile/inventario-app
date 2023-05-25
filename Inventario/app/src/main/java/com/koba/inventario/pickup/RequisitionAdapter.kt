@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.koba.inventario.R
 
@@ -48,6 +49,12 @@ class RequisitionAdapter : RecyclerView.Adapter<RequisitionAdapter.ViewHolder>()
     fun filterList(list: ArrayList<RequisitionUiModel>) {
         this.pList = list
         notifyDataSetChanged()
+    }
+
+    fun refreshList(viewModel: RequisitionViewModel) {
+        for(l in this.pList) {
+            viewModel.findRequisitionList(l.requisition.toString(),l.user.toString())
+        }
     }
 
     class ViewHolder(ItemView: View, listener: OnItemClickListener) : RecyclerView.ViewHolder(ItemView) {

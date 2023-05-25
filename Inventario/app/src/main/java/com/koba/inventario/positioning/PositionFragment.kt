@@ -15,6 +15,7 @@ import com.koba.inventario.R
 import com.koba.inventario.camera.BARCODE_CAPTURED_VALUE
 import com.koba.inventario.camera.INVOCATION_SOURCE_VALUE
 import com.koba.inventario.database.AppDatabase
+import com.koba.inventario.pickup.PickupObject
 
 const val INVOCATION_SOURCE_POSITION_PRODUCT = "INVOCATION_SOURCE_POSITION_PRODUCT"
 const val INVOCATION_SOURCE_POSITION_LOCATION = "INVOCATION_SOURCE_POSITION_LOCATION"
@@ -42,6 +43,10 @@ class PositionFragment : Fragment() {
     private lateinit var user: String
     private var saved: Boolean = true
     private var savedTraffic: Boolean = true
+    private lateinit var spinnerTipo: Spinner
+    private var seleccionTipo: String = ""
+    val LENGTH_MESSAGE = Toast.LENGTH_LONG
+    private var arrProductLocation : List<PickupObject> = ArrayList<PickupObject>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,7 +65,10 @@ class PositionFragment : Fragment() {
             INVOCATION_SOURCE_VALUE
         )?.observe(
             viewLifecycleOwner) { result ->
-            if(result.equals(INVOCATION_SOURCE_POSITION_PRODUCT)) barCodeProduct.setText(barcodeSource) else barCodeLocation.setText(barcodeSource)
+            if(result.equals(INVOCATION_SOURCE_POSITION_PRODUCT)){
+                barCodeProduct.setText(barcodeSource)
+                onBlurProduct()
+            } else barCodeLocation.setText(barcodeSource)
         }
         setHasOptionsMenu(true)
         initLiveData()
@@ -80,6 +88,7 @@ class PositionFragment : Fragment() {
         amountProduct = view.findViewById(R.id.edit_text_amount)
         spinnerTraffic = view.findViewById(R.id.spinner_traffic)
         finishButton = view.findViewById(R.id.button_finish_position)
+        spinnerTipo = view.findViewById(R.id.spinnerAlistamiento)
 
         syncButton.isEnabled = false
 
@@ -100,10 +109,28 @@ class PositionFragment : Fragment() {
             }
         }
 
+        val elementos = ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_dropdown_item)
+
+        elementos.addAll("1 a 1", "Multiple")
+
+        spinnerTipo.adapter = elementos
+
+
+        spinnerTipo.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                // You can define your actions as you want
+            }
+
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
+                seleccionTipo = spinnerTipo.selectedItem as String
+            }
+        }
+
         barCodeProduct.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
                 barCodeProduct.setText(barCodeProduct.text.substring(0, barCodeProduct.text.length-1))
-                barCodeLocation.requestFocus()
+                onBlurProduct()
                 activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
             }
             false
@@ -112,7 +139,7 @@ class PositionFragment : Fragment() {
         barCodeLocation.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
                 barCodeLocation.setText(barCodeLocation.text.substring(0, barCodeLocation.text.length-1))
-                amountProduct.requestFocus()
+                barCodeProduct.requestFocus()
                 activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
             }
             false
@@ -121,31 +148,39 @@ class PositionFragment : Fragment() {
         saveButton.setOnClickListener {
             progressBar.visibility = View.VISIBLE
             var required = true
-            if (TextUtils.isEmpty(barCodeProduct.text.toString())){
-                Toast.makeText(requireContext(), getString(R.string.required_field_product), Toast.LENGTH_SHORT).show()
-                required = false
+
+            if(!seleccionTipo.equals("1 a 1")) {
+                if (TextUtils.isEmpty(barCodeProduct.text.toString())){
+                    Toast.makeText(requireContext(), getString(R.string.required_field_product), LENGTH_MESSAGE).show()
+                    required = false
+                }
+                if (TextUtils.isEmpty(barCodeLocation.text.toString())) {
+                    Toast.makeText(requireContext(), getString(R.string.required_field_location), LENGTH_MESSAGE)
+                        .show()
+                    required = false
+                }
+                if (TextUtils.isEmpty(amountProduct.text.toString())) {
+                    Toast.makeText(requireContext(), getString(R.string.required_field_amount), LENGTH_MESSAGE)
+                        .show()
+                    required = false
+                }
+                if (trafficIdSelected.trafficId == 0) {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.required_field_traffic),
+                        LENGTH_MESSAGE
+                    ).show()
+                    required = false
+                }
+                if(required){
+                    save(barCodeProduct.text.toString(),barCodeLocation.text.toString(),user,amountProduct.text.toString(),trafficIdSelected.trafficId!!)
+                }
+            } else {
+                for(p in arrProductLocation) {
+                    save(p.barcodeProduct,p.barcodeLocation,user,p.amount.toString(),trafficIdSelected.trafficId!!)
+                }
             }
-            if (TextUtils.isEmpty(barCodeLocation.text.toString())) {
-                Toast.makeText(requireContext(), getString(R.string.required_field_location), Toast.LENGTH_SHORT)
-                    .show()
-                required = false
-            }
-            if (TextUtils.isEmpty(amountProduct.text.toString())) {
-                Toast.makeText(requireContext(), getString(R.string.required_field_amount), Toast.LENGTH_SHORT)
-                    .show()
-                required = false
-            }
-            if (trafficIdSelected.trafficId == 0) {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.required_field_traffic),
-                    Toast.LENGTH_SHORT
-                ).show()
-                required = false
-            }
-            if(required){
-                save(barCodeProduct.text.toString(),barCodeLocation.text.toString(),user,amountProduct.text.toString(),trafficIdSelected.trafficId!!)
-            }
+
             progressBar.visibility = View.INVISIBLE
         }
 
@@ -164,7 +199,7 @@ class PositionFragment : Fragment() {
                     Toast.makeText(
                         requireContext(),
                         getString(R.string.required_field_traffic),
-                        Toast.LENGTH_SHORT
+                        LENGTH_MESSAGE
                     ).show()
                     required = false
                 }
@@ -192,7 +227,7 @@ class PositionFragment : Fragment() {
         }
 
         syncButton.setOnClickListener {
-            Toast.makeText(requireContext(), getString(R.string.sync_complete), Toast.LENGTH_SHORT)
+            Toast.makeText(requireContext(), getString(R.string.sync_complete), LENGTH_MESSAGE)
                 .show()
             syncButton.isEnabled = false
             viewModel.findByUser(user)
@@ -205,12 +240,12 @@ class PositionFragment : Fragment() {
         viewModelTraffic.setDataBase(AppDatabase.getDatabase(requireContext().applicationContext))
         viewModel.createdLiveData.observe(viewLifecycleOwner) { result ->
             if (result) {
-                Toast.makeText(requireContext(), getString(R.string.save_item_ok_position), Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.save_item_ok_position), LENGTH_MESSAGE).show()
             }
         }
         viewModelTraffic.createdLiveData.observe(viewLifecycleOwner) { result ->
             if (result) {
-                Toast.makeText(requireContext(), getString(R.string.save_item_ok_position), Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.save_item_ok_position), LENGTH_MESSAGE).show()
             }
         }
         viewModel.syncLiveData.observe(viewLifecycleOwner) { result ->
@@ -228,7 +263,7 @@ class PositionFragment : Fragment() {
                 Toast.makeText(
                     requireContext(),
                     getString(R.string.traffic_field_failed),
-                    Toast.LENGTH_SHORT
+                    LENGTH_MESSAGE
                 ).show()
             }
         }
@@ -244,13 +279,13 @@ class PositionFragment : Fragment() {
         }
         viewModelTraffic.trafficLiveData.observe(viewLifecycleOwner) { result ->
             if(!savedTraffic){
-                Toast.makeText(requireContext(), result, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), result, LENGTH_MESSAGE).show()
                 savedTraffic = true
             }
         }
         viewModel.positionLiveData.observe(viewLifecycleOwner) { result ->
             if(!saved){
-                Toast.makeText(requireContext(), result, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), result, LENGTH_MESSAGE).show()
                 saved = true
             }
         }
@@ -300,10 +335,6 @@ class PositionFragment : Fragment() {
         viewModel.positionServiceCreateLiveData.observe(viewLifecycleOwner) { result ->
             if(result != null && !saved) {
                 if (result) {
-                   // this.trafficIdSelected = TrafficUiModel(null)
-                  //  spinnerTraffic.setSelection(0)
-                 //   adapter.notifyDataSetChanged()
-                 //   spinnerTraffic.adapter = adapter
                     barCodeProduct.text.clear()
                     barCodeLocation.text.clear()
                     amountProduct.text.clear()
@@ -316,6 +347,44 @@ class PositionFragment : Fragment() {
         viewModel.findAllTraffics()
     }
 
+    private fun onBlurProduct() {
+        if(barCodeLocation.text != null && barCodeLocation.text.isNotEmpty() && barCodeProduct.text != null && barCodeProduct.text.isNotEmpty()) {
+            activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+
+            //Si es 1 vs 1
+            if(seleccionTipo.equals("1 a 1")) {
+                var exists = false;
+
+                var amountTemp = 1
+                for(p in arrProductLocation) {
+                    if(p.barcodeLocation == barCodeLocation.text.toString() && p.barcodeProduct == barCodeProduct.text.toString()) {
+                        p.amount = p.amount +1;
+                        exists = true;
+                        amountTemp = p.amount;
+                        break;
+                    }
+                }
+
+                if(!exists) {
+                    val p = PickupObject(barCodeProduct.text.toString(), barCodeLocation.text.toString(), 1);
+                    arrProductLocation = append(arrProductLocation, p);
+                }
+                amountProduct.setText(amountTemp.toString());
+
+                barCodeProduct.text.clear()
+                barCodeProduct.requestFocus()
+            } else {
+                amountProduct.requestFocus()
+            }
+        }
+    }
+
+    fun append(arr: List<PickupObject>, element: PickupObject): List<PickupObject> {
+        val list: MutableList<PickupObject> = arr.toMutableList()
+        list.add(element)
+        return list
+    }
+
     private fun save(barcodeProduct: String,barcodeLocation: String,user: String, amount :String, trafficIdSelected: Int) {
         saved = false
         var amountInt = 0;
@@ -323,7 +392,7 @@ class PositionFragment : Fragment() {
         try {
             amountInt = amount.toInt();
         } catch(ex: Exception) {
-            Toast.makeText(requireContext(), getString(R.string.required_number_amount), Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.required_number_amount), LENGTH_MESSAGE).show()
         }
 
         viewModel.createPositionService(trafficIdSelected,barcodeProduct,barcodeLocation,amountInt,user)

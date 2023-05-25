@@ -37,55 +37,42 @@
             app:layout_constraintStart_toEndOf="@+id/edit_text_amount"
             app:layout_constraintTop_toTopOf="@+id/edit_text_amount" />
 
-        <!--<Button
-            android:id="@+id/button_finish_validate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
-            android:text="@string/text_button_finish"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.067"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edit_text_amount" />
-
-
-            <Button
-            android:id="@+id/button_backup_validate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="84dp"
-            android:text="@string/text_button_backup"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.052"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edit_text_amount" />-->
-
-
-
-
-
-
         <TextView
-            android:id="@+id/textViewInventory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/text_view_inventario"
+            android:id="@+id/textTipoAlistamiento"
+            android:layout_width="103dp"
+            android:layout_height="39dp"
+            android:layout_marginTop="62dp"
+            android:layout_marginEnd="10dp"
+            android:text="@string/text_view_tipo_alistamiento"
             android:textAlignment="textStart"
-            android:textSize="18dp"
-            android:layout_marginTop="20dp"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            app:layout_constraintHorizontal_bias="0.029"
             app:layout_constraintStart_toStartOf="@+id/textViewValidate"
-            app:layout_constraintTop_toBottomOf="@+id/textViewValidate" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewValidate"
+            app:layout_constraintVertical_bias="0.81" />
 
         <Spinner
-            android:id="@+id/spinner_inventory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAlignment="textStart"
-            android:layout_marginTop="22dp"
-            android:layout_marginStart="20dp"
-            app:layout_constraintStart_toEndOf="@+id/textViewInventory"
+            android:id="@+id/spinnerAlistamiento"
+            android:layout_width="136dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="64dp"
+            android:scrollbarThumbVertical="@drawable/scrollbar_style"
+            app:layout_constraintStart_toEndOf="@+id/textTipoAlistamiento"
             app:layout_constraintTop_toBottomOf="@+id/textViewValidate"
-            />
+            tools:ignore="MissingConstraints" />
+
+
+        <EditText
+            android:id="@+id/editConteo"
+            android:layout_width="219dp"
+            android:layout_height="42dp"
+            android:layout_marginTop="20dp"
+            android:text="@string/text_view_conteo"
+            android:textAlignment="textStart"
+            android:textSize="18dp"
+            app:layout_constraintStart_toStartOf="@+id/textTipoAlistamiento"
+            app:layout_constraintTop_toBottomOf="@+id/textTipoAlistamiento" />
 
         <TextView
             android:id="@+id/textViewValidate"
@@ -141,20 +128,9 @@
             android:layout_marginTop="28dp"
             android:enabled="true"
             android:hint="@string/hint_location"
-            app:layout_constraintStart_toStartOf="@+id/textViewInventory"
-            app:layout_constraintTop_toBottomOf="@+id/textViewInventory"
+            app:layout_constraintStart_toStartOf="@+id/editConteo"
+            app:layout_constraintTop_toBottomOf="@+id/editConteo"
             app:layout_constraintVertical_chainStyle="packed" />
-
-        <!--<EditText
-            android:id="@+id/barcode_count"
-            android:layout_width="218dp"
-            android:layout_height="65dp"
-            android:layout_marginTop="240dp"
-            android:enabled="true"
-            android:hint="@string/hint_location"
-            app:layout_constraintStart_toStartOf="@+id/textViewInventory"
-            app:layout_constraintTop_toBottomOf="@+id/textViewInventory"
-            app:layout_constraintVertical_chainStyle="packed" />-->
 
         <EditText
             android:id="@+id/edit_text_amount"
